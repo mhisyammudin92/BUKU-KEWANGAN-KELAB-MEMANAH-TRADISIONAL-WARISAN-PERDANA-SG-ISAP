@@ -23,6 +23,7 @@ jobs:
         with:
           distribution: "temurin"
           java-version: "17"
+          cache: "gradle"
 
       - name: Sediakan folder web Capacitor
         run: |
@@ -50,6 +51,16 @@ jobs:
           npm install
           npx cap add android
           npx cap sync android
+
+      - name: Guna logo kelab sebagai ikon APK Android
+        run: |
+          for dir in android/app/src/main/res/mipmap-*; do
+            if [ -d "$dir" ]; then
+              cp www/icon-512.png "$dir/ic_launcher.png"
+              cp www/icon-512.png "$dir/ic_launcher_round.png"
+              cp www/icon-512.png "$dir/ic_launcher_foreground.png"
+            fi
+          done
 
       - name: Jana fail APK Debug
         run: |
