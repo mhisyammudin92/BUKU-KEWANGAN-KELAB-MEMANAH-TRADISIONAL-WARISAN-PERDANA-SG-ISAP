@@ -55,9 +55,12 @@ jobs:
         run: |
           for dir in android/app/src/main/res/mipmap-*; do
             if [ -d "$dir" ]; then
+              rm -f "$dir/ic_launcher.xml" "$dir/ic_launcher_round.xml"
               cp www/icon-512.png "$dir/ic_launcher.png"
               cp www/icon-512.png "$dir/ic_launcher_round.png"
-              cp www/icon-512.png "$dir/ic_launcher_foreground.png"
+              if [ -f "$dir/ic_launcher_foreground.png" ]; then
+                cp www/icon-512.png "$dir/ic_launcher_foreground.png"
+              fi
             fi
           done
 
