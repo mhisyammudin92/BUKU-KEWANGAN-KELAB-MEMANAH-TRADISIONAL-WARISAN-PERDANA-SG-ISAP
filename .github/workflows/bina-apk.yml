@@ -1,0 +1,46 @@
+name: Bina APK Buku Kewangan KMT MSAS
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+jobs:
+  bina-apk:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Muat turun fail repositori
+        uses: actions/checkout@v4
+
+      - name: Sediakan Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Sediakan Java JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: "temurin"
+          java-version: "17"
+
+      - name: Sediakan folder web Capacitor
+        run: |
+          mkdir -p www
+          cp index.html manifest.json sw.js icon-192.png icon-512.png www/
+          npm init -y
+          npm install @capacitor/core @capacitor/cli @capacitor/android
+          npx cap init "Buku Kewangan KMT MSAS" "my.kmtwp.bukukewangan" --web-dir=www
+          npx cap add android
+          npx cap sync android
+
+      - name: Jana fail APK Debug
+        run: |
+          cd android
+          ./gradlew assembleDebug
+
+      - name: Muat naik APK sebagai Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Buku-Kewangan-KMT-MSAS-APK
+          path: android/app/build/outputs/apk/debug/app-debug.apk
