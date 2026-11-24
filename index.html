@@ -1,901 +1,136 @@
-﻿<!DOCTYPE html>
-<html lang="ms">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0" />
-  <title>Buku Kewangan KMT MSAS</title>
-  <link rel="manifest" href="./manifest.json" />
-  <meta name="theme-color" content="#064e3b" />
-  <style>
-    :root {
-      --hijau-utama: #064e3b;
-      --hijau-gelap: #022c22;
-      --emas: #d97706;
-      --emas-terang: #fef3c7;
-      --latar: #f8fafc;
-      --kad: #ffffff;
-      --teks: #0f172a;
-      --teks-pudding: #475569;
-      --sempadan: #cbd5e1;
-      --bahaya-bg: #fef2f2;
-      --bahaya-teks: #991b1b;
+<script>
+const SHEET_AHLI_CSV_URL =
+  "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ-RK3Xy6UDixtvV5ys_HkyGm9uVKidkOtDIXTYH8tjKmCW1eZDvr8CHnvsY60gYhxZTc6t10rJodR4/pub?gid=512720693&single=true&output=csv";
+const CACHE_KEY_AHLI = "kmt_msas_ahli_sheet_v1";
+
+function pecahBarisCSV(teks) {
+  const baris = [];
+  let semasa = "";
+  let dalamPetikan = false;
+  let lajur = [];
+
+  for (let i = 0; i < teks.length; i++) {
+    const aksara = teks[i];
+    const aksaraSeterusnya = teks[i + 1];
+
+    if (aksara === '"' && dalamPetikan && aksaraSeterusnya === '"') {
+      semasa += '"';
+      i++;
+    } else if (aksara === '"') {
+      dalamPetikan = !dalamPetikan;
+    } else if (aksara === "," && !dalamPetikan) {
+      lajur.push(semasa.trim());
+      semasa = "";
+    } else if ((aksara === "\n" || aksara === "\r") && !dalamPetikan) {
+      if (aksara === "\r" && aksaraSeterusnya === "\n") i++;
+      lajur.push(semasa.trim());
+      if (lajur.some((v) => v !== "")) baris.push(lajur);
+      lajur = [];
+      semasa = "";
+    } else {
+      semasa += aksara;
     }
+  }
+  if (semasa !== "" || lajur.length > 0) {
+    lajur.push(semasa.trim());
+    if (lajur.some((v) => v !== "")) baris.push(lajur);
+  }
+  return baris;
+}
 
-    * { box-sizing: border-box; }
+function cariIndeksLajur(header, kataKunciList) {
+  for (const kunci of kataKunciList) {
+    const idx = header.findIndex((h) => h.includes(kunci));
+    if (idx >= 0) return idx;
+  }
+  return -1;
+}
 
-    body {
-      margin: 0;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      background: var(--latar);
-      color: var(--teks);
-      line-height: 1.45;
-    }
-
-    .bekas-telefon {
-      max-width: 440px;
-      min-width: 360px;
-      margin: 0 auto;
-      min-height: 100vh;
-      background: var(--latar);
-      padding-bottom: 40px;
-    }
-
-    .kepala {
-      background: linear-gradient(135deg, var(--hijau-utama), var(--hijau-gelap));
-      color: #ffffff;
-      padding: 16px;
-    }
-
-    .kepala small {
-      display: block;
-      font-size: 11px;
-      letter-spacing: 0.04em;
-      text-transform: uppercase;
-      opacity: 0.9;
-    }
-
-    .kepala h1 {
-      margin: 4px 0 10px;
-      font-size: 20px;
-      line-height: 1.25;
-    }
-
-    .bar-peranan {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 8px;
-      background: rgba(255, 255, 255, 0.12);
-      padding: 8px 10px;
-      border-radius: 8px;
-      font-size: 12px;
-    }
-
-    select, input, button, textarea {
-      min-height: 48px;
-      font-size: 14px;
-      border-radius: 8px;
-      font-family: inherit;
-    }
-
-    select, input, textarea {
-      border: 1px solid var(--sempadan);
-      padding: 10px 12px;
-      background: #ffffff;
-      color: var(--teks);
-      width: 100%;
-    }
-
-    .bar-peranan select {
-      width: auto;
-      min-height: 40px;
-      padding: 6px 10px;
-      font-size: 13px;
-      font-weight: 600;
-    }
-
-    .tab-nav {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 6px;
-      padding: 10px 12px 0;
-    }
-
-    .tab-btn {
-      background: #ffffff;
-      color: var(--teks);
-      border: 1px solid var(--sempadan);
-      font-weight: 600;
-      font-size: 13px;
-      padding: 8px 6px;
-      cursor: pointer;
-    }
-
-    .tab-btn.aktif {
-      background: var(--hijau-utama);
-      color: #ffffff;
-      border-color: var(--hijau-utama);
-    }
-
-    .kandungan {
-      padding: 12px;
-    }
-
-    .kad {
-      background: var(--kad);
-      border: 1px solid var(--sempadan);
-      border-radius: 10px;
-      padding: 12px;
-      margin-bottom: 12px;
-      box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
-    }
-
-    .kad h2 {
-      margin: 0 0 8px;
-      font-size: 15px;
-    }
-
-    .grid-2 {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 8px;
-    }
-
-    .baki-kotak {
-      border: 1px solid var(--sempadan);
-      border-radius: 8px;
-      padding: 10px;
-      background: #ffffff;
-    }
-
-    .baki-kotak span {
-      display: block;
-      font-size: 12px;
-      color: var(--teks-pudding);
-    }
-
-    .baki-kotak strong {
-      font-size: 17px;
-      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-    }
-
-    .baki-jumlah {
-      margin-top: 8px;
-      background: var(--hijau-gelap);
-      color: #ffffff;
-      border-radius: 8px;
-      padding: 12px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .baki-jumlah strong {
-      font-size: 18px;
-      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-    }
-
-    .btn-utama {
-      background: var(--hijau-utama);
-      color: #ffffff;
-      border: none;
-      font-weight: 600;
-      padding: 10px 14px;
-      cursor: pointer;
-      width: 100%;
-    }
-
-    .btn-sekunder {
-      background: #ffffff;
-      color: var(--teks);
-      border: 1px solid var(--sempadan);
-      font-weight: 600;
-      padding: 10px 14px;
-      cursor: pointer;
-      width: 100%;
-    }
-
-    .amaran {
-      background: var(--emas-terang);
-      border: 1px solid var(--emas);
-      color: #78350f;
-      border-radius: 8px;
-      padding: 10px 12px;
-      font-size: 13px;
-      margin-bottom: 12px;
-    }
-
-    .ralat {
-      background: var(--bahaya-bg);
-      border: 2px solid var(--bahaya-teks);
-      color: var(--bahaya-teks);
-      border-radius: 8px;
-      padding: 10px 12px;
-      font-size: 13px;
-      margin-bottom: 12px;
-    }
-
-    .senarai-item {
-      border: 1px solid var(--sempadan);
-      border-radius: 8px;
-      padding: 10px;
-      margin-bottom: 8px;
-      background: #ffffff;
-    }
-
-    .lencana-status {
-      display: inline-block;
-      padding: 4px 8px;
-      border-radius: 6px;
-      border: 1px solid #64748b;
-      font-size: 12px;
-      font-weight: 700;
-      background: #f1f5f9;
-    }
-
-    .jarak-bawah { margin-bottom: 8px; }
-    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12px; word-break: break-all; }
-    .pudding { color: var(--teks-pudding); font-size: 12px; }
-  </style>
-</head>
-<body>
-  <div class="bekas-telefon" id="app"></div>
-
-  <script>
-    if ("serviceWorker" in navigator) {
-      window.addEventListener("load", () => {
-        navigator.serviceWorker.register("./sw.js").catch((err) => {
-          console.error("Ralat pendaftaran Service Worker:", err);
-        });
-      });
-    }
-
-    const KUNCI_SIMPANAN = "kmt_msas_state_v1";
-
-    // Data awal ahli yang telah diluluskan daripada Google Sheet kelab (nama dipangkas ruang)
-    const AHLI_AWAL = [
-      { no_ahli: "KMTWP/2026/0001", nama_penuh: "MOHAMAD HISYAMMUDIN BIN ROSLAN", tarikh_kelulusan: "2026-11-23", bulan_mula_bil: "2026-11-01", aktif: true },
-      { no_ahli: "KMTWP/2026/0002", nama_penuh: "Nurul Azieza Bhalqeist Ahmad", tarikh_kelulusan: "2026-11-23", bulan_mula_bil: "2026-11-01", aktif: true },
-      { no_ahli: "KMTWP/2026/0003", nama_penuh: "MOHD SIDEK BIN ISMAIL", tarikh_kelulusan: "2026-11-23", bulan_mula_bil: "2026-11-01", aktif: true },
-      { no_ahli: "KMTWP/2026/0004", nama_penuh: "MUHAMAD ROWAISHAM BIN MOHD ROZANI", tarikh_kelulusan: "2026-11-23", bulan_mula_bil: "2026-11-01", aktif: true },
-      { no_ahli: "KMTWP/2026/0005", nama_penuh: "MUHAMMAD AMIRUL HISYAM BIN LUXMAN", tarikh_kelulusan: "2026-11-23", bulan_mula_bil: "2026-11-01", aktif: true }
-    ];
-
-    async function sha256Hex(teks) {
-      const buf = new TextEncoder().encode(teks);
-      const hash = await crypto.subtle.digest("SHA-256", buf);
-      return Array.from(new Uint8Array(hash)).map((b) => b.toString(16).padStart(2, "0")).join("");
-    }
-
-    function formatRM(sen) {
-      const neg = sen < 0;
-      const abs = Math.abs(Math.round(sen));
-      const rm = Math.floor(abs / 100).toLocaleString("en-US");
-      const bakiSen = String(abs % 100).padStart(2, "0");
-      return `${neg ? "-" : ""}RM ${rm}.${bakiSen}`;
-    }
-
-    function formatTarikhMY(iso) {
-      if (!iso) return "-";
-      const p = iso.split("T")[0].split("-");
-      return p.length === 3 ? `${p[2]}/${p[1]}/${p[0]}` : iso;
-    }
-
-    function muatKeadaanAwal() {
+async function segerakAhliDariGoogleSheet(paksa = false) {
+  if (!paksa) {
+    const tersimpan = localStorage.getItem(CACHE_KEY_AHLI);
+    if (tersimpan) {
       try {
-        const raw = localStorage.getItem(KUNCI_SIMPANAN);
-        if (raw) return JSON.parse(raw);
-      } catch (_) {}
-      return {
-        tab: "ringkasan",
-        peranan: "bendahari",
-        bakiAwalBankSen: 0,
-        bakiAwalTunaiSen: 0,
-        kadarBulananSen: null,
-        bulanAktif: "2026-11-01",
-        carianAhli: "",
-        bulanDikunci: [],
-        ahli: AHLI_AWAL,
-        caj: [],
-        agihan: [],
-        transaksi: [],
-        bukti: [],
-        logAudit: [],
-        pembilangResit: 0,
-        pembilangBaucar: 0,
-        kunciIdempotensi: {},
-        ralat: null,
-        info: null
-      };
-    }
-
-    let state = muatKeadaanAwal();
-
-    function simpanKeadaan() {
-      try {
-        localStorage.setItem(KUNCI_SIMPANAN, JSON.stringify(state));
-      } catch (_) {}
-    }
-
-    async function tambahLogAudit(tindakan, rekodId, sebelum, selepas, sebab) {
-      const akhir = state.logAudit[state.logAudit.length - 1];
-      const cincangSebelum = akhir ? akhir.cincang_semasa : "0".repeat(64);
-      const masaUtc = new Date().toISOString();
-      const pelaku = `Pegawai (${state.peranan})`;
-      const bahan = `${cincangSebelum}|${pelaku}|${masaUtc}|${tindakan}|${rekodId}|${JSON.stringify(sebelum)}|${JSON.stringify(selepas)}`;
-      const cincangSemasa = await sha256Hex(bahan);
-      state.logAudit.push({
-        no: state.logAudit.length + 1,
-        pelaku,
-        masa_utc: masaUtc,
-        tindakan,
-        rekod_id: rekodId,
-        sebab: sebab || "-",
-        cincang_sebelum: cincangSebelum,
-        cincang_semasa: cincangSemasa
-      });
-    }
-
-    function kiraBaki() {
-      let bank = Number(state.bakiAwalBankSen) || 0;
-      let tunai = Number(state.bakiAwalTunaiSen) || 0;
-      let masuk = 0;
-      let keluar = 0;
-
-      for (const t of state.transaksi) {
-        if (t.status !== "dibayar") continue;
-        const tanda = (t.jenis === "wang_masuk" || t.jenis === "pindahan_masuk") ? 1 : -1;
-        if (t.akaun_id === "bank_utama") bank += tanda * t.amaun_sen;
-        if (t.akaun_id === "peti_tunai") tunai += tanda * t.amaun_sen;
-        if (t.jenis === "wang_masuk") masuk += t.amaun_sen;
-        if (t.jenis === "wang_keluar") keluar += t.amaun_sen;
-      }
-
-      return { bank, tunai, jumlah: bank + tunai, masuk, keluar };
-    }
-
-    function kiraStatusYuran(noAhli, bulan, tarikhRujukan = "2026-11-24") {
-      const caj = state.caj.find((c) => c.no_ahli === noAhli && c.tempoh_bulan === bulan);
-      if (!caj) return { status: "Belum dibil", ikon: "—", bakiSen: 0, resit: [] };
-      if (caj.dikecualikan) return { status: "Dikecualikan", ikon: "⊘", bakiSen: 0, resit: [] };
-
-      const agihanSah = state.agihan.filter((a) => {
-        if (a.caj_id !== caj.id) return false;
-        const trx = state.transaksi.find((t) => t.id === a.transaksi_id);
-        return trx && trx.status === "dibayar";
-      });
-
-      const dibayarSen = agihanSah.reduce((s, a) => s + a.amaun_diagih_sen, 0);
-      const bakiSen = Math.max(0, caj.amaun_caj_sen - dibayarSen);
-      const resit = agihanSah
-        .map((a) => state.transaksi.find((t) => t.id === a.transaksi_id)?.nombor_dokumen)
-        .filter(Boolean);
-
-      if (dibayarSen >= caj.amaun_caj_sen) return { status: "Selesai", ikon: "✓", bakiSen: 0, resit };
-      if (dibayarSen > 0) return { status: "Separa", ikon: "◐", bakiSen, resit };
-      if (tarikhRujukan > caj.tarikh_akhir) return { status: "Tertunggak", ikon: "!", bakiSen, resit };
-      return { status: "Belum bayar", ikon: "○", bakiSen, resit };
-    }
-
-    window.aksiTerimaBayaran = async function (e) {
-      e.preventDefault();
-      state.ralat = null;
-      if (state.peranan === "juruaudit") {
-        await tambahLogAudit("CUBAAN_UBAH_DITOLAK", "transaksi", null, null, "Juruaudit cuba merekod bayaran");
-        state.ralat = "DITOLAK: Peranan Juruaudit hanya mempunyai akses baca dan eksport.";
-        simpanKeadaan();
-        render();
-        return;
-      }
-
-      const form = e.target;
-      const noAhli = form.no_ahli.value;
-      const rmInput = parseFloat(form.amaun_rm.value);
-      const amaunSen = Math.round(rmInput * 100);
-      const akaunId = form.akaun_id.value;
-      const tarikh = form.tarikh.value;
-      const bulanKey = tarikh.slice(0, 7);
-
-      if (state.bulanDikunci.includes(bulanKey)) {
-        state.ralat = `DITOLAK: Bulan ${bulanKey} telah dikunci.`;
-        render();
-        return;
-      }
-      if (!noAhli || isNaN(amaunSen) || amaunSen <= 0) {
-        state.ralat = "Sila pilih ahli dan masukkan amaun RM yang sah.";
-        render();
-        return;
-      }
-
-      const kunciIdem = `${noAhli}|${amaunSen}|${akaunId}|${tarikh}`;
-      if (state.kunciIdempotensi[kunciIdem]) {
-        state.info = `Permintaan pendua dikesan — Resit sedia ada: ${state.kunciIdempotensi[kunciIdem]}`;
-        render();
-        return;
-      }
-
-      state.pembilangResit += 1;
-      const tahun = tarikh.slice(0, 4);
-      const nomborResit = `R/${tahun}/${String(state.pembilangResit).padStart(4, "0")}`;
-      const ahli = state.ahli.find((a) => a.no_ahli === noAhli);
-
-      const trx = {
-        id: `trx_${Date.now()}`,
-        nombor_dokumen: nomborResit,
-        jenis: "wang_masuk",
-        status: "dibayar",
-        tarikh_urus_niaga: tarikh,
-        akaun_id: akaunId,
-        kategori: "Yuran Keahlian",
-        tujuan: `Bayaran yuran ${ahli ? ahli.nama_penuh : noAhli}`,
-        pembayar_penerima: ahli ? `${ahli.nama_penuh} (${noAhli})` : noAhli,
-        kaedah_bayaran: akaunId === "bank_utama" ? "pindahan_bank" : "tunai",
-        amaun_sen: amaunSen
-      };
-
-      state.transaksi.push(trx);
-      state.kunciIdempotensi[kunciIdem] = nomborResit;
-
-      // Agih mengikut bulan tertua dahulu
-      let bakiAgih = amaunSen;
-      const cajAhli = state.caj
-        .filter((c) => c.no_ahli === noAhli && !c.dikecualikan)
-        .sort((a, b) => a.tempoh_bulan.localeCompare(b.tempoh_bulan));
-
-      for (const c of cajAhli) {
-        if (bakiAgih <= 0) break;
-        const infoSel = kiraStatusYuran(noAhli, c.tempoh_bulan, tarikh);
-        if (infoSel.bakiSen <= 0) continue;
-        const agihSen = Math.min(bakiAgih, infoSel.bakiSen);
-        state.agihan.push({
-          id: `ag_${Date.now()}_${c.id}`,
-          transaksi_id: trx.id,
-          caj_id: c.id,
-          amaun_diagih_sen: agihSen
-        });
-        bakiAgih -= agihSen;
-      }
-
-      await tambahLogAudit("TERIMA_BAYARAN_RESIT", trx.id, null, trx, "Bayaran direkodkan");
-      state.info = `Resit ${nomborResit} berjaya dikeluarkan (${formatRM(amaunSen)}).`;
-      simpanKeadaan();
-      render();
-    };
-
-    window.aksiRekodBelanja = async function (e) {
-      e.preventDefault();
-      state.ralat = null;
-      if (state.peranan === "juruaudit") {
-        await tambahLogAudit("CUBAAN_UBAH_DITOLAK", "transaksi", null, null, "Juruaudit cuba merekod perbelanjaan");
-        state.ralat = "DITOLAK: Peranan Juruaudit tidak dibenarkan mengubah atau memadam rekod.";
-        simpanKeadaan();
-        render();
-        return;
-      }
-
-      const form = e.target;
-      const amaunSen = Math.round(parseFloat(form.amaun_rm.value) * 100);
-      const tarikh = form.tarikh.value;
-      const bulanKey = tarikh.slice(0, 7);
-
-      if (state.bulanDikunci.includes(bulanKey)) {
-        state.ralat = `DITOLAK: Bulan ${bulanKey} telah dikunci.`;
-        render();
-        return;
-      }
-      if (isNaN(amaunSen) || amaunSen <= 0) {
-        state.ralat = "Masukkan amaun perbelanjaan yang sah.";
-        render();
-        return;
-      }
-
-      state.pembilangBaucar += 1;
-      const nomborBaucar = `B/${tarikh.slice(0, 4)}/${String(state.pembilangBaucar).padStart(4, "0")}`;
-      const namaBukti = form.nama_bukti.value.trim() || `bukti_${nomborBaucar.replace(/\//g, "_")}.txt`;
-      const cincangBukti = await sha256Hex(`${nomborBaucar}|${amaunSen}|${form.tujuan.value}`);
-
-      const trx = {
-        id: `b_${Date.now()}`,
-        nombor_dokumen: nomborBaucar,
-        jenis: "wang_keluar",
-        status: "dibayar",
-        tarikh_urus_niaga: tarikh,
-        akaun_id: form.akaun_id.value,
-        kategori: form.kategori.value,
-        tujuan: form.tujuan.value.trim(),
-        pembayar_penerima: form.penerima.value.trim(),
-        kaedah_bayaran: form.akaun_id.value === "bank_utama" ? "pindahan_bank" : "tunai",
-        amaun_sen: amaunSen,
-        diluluskan_oleh: "Pengerusi / AJK Diberi Kuasa"
-      };
-
-      state.transaksi.push(trx);
-      state.bukti.push({
-        id: `bk_${Date.now()}`,
-        transaksi_id: trx.id,
-        nama_fail: namaBukti,
-        cincang_sha256: cincangBukti
-      });
-
-      await tambahLogAudit("CIPTA_BAUCAR_BAYARAN", trx.id, null, trx, "Perbelanjaan diluluskan & dibayar");
-      state.info = `Baucar ${nomborBaucar} direkodkan (${formatRM(amaunSen)}).`;
-      simpanKeadaan();
-      render();
-    };
-
-    window.aksiJanaCajBulanan = async function (e) {
-      e.preventDefault();
-      state.ralat = null;
-      if (state.peranan === "juruaudit") {
-        state.ralat = "DITOLAK: Juruaudit hanya boleh membaca rekod.";
-        render();
-        return;
-      }
-
-      const form = e.target;
-      const kadarSen = Math.round(parseFloat(form.kadar_rm.value) * 100);
-      const bulan = form.bulan_caj.value;
-      if (isNaN(kadarSen) || kadarSen <= 0) {
-        state.ralat = "Sila masukkan kadar yuran yang disahkan oleh Bendahari.";
-        render();
-        return;
-      }
-
-      state.kadarBulananSen = kadarSen;
-      let cajBaru = 0;
-
-      for (const a of state.ahli) {
-        if (!a.aktif) continue;
-        const wujud = state.caj.some((c) => c.no_ahli === a.no_ahli && c.tempoh_bulan === bulan);
-        if (!wujud) {
-          state.caj.push({
-            id: `caj_${a.no_ahli}_${bulan}`,
-            no_ahli: a.no_ahli,
-            tempoh_bulan: bulan,
-            tarikh_akhir: `${bulan.slice(0, 7)}-10`,
-            amaun_caj_sen: kadarSen,
-            dikecualikan: false
-          });
-          cajBaru += 1;
+        const dataCache = JSON.parse(tersimpan);
+        if (Array.isArray(dataCache.ahli) && dataCache.ahli.length > 0) {
+          kemaskiniSenaraiAhliAplikasi(dataCache.ahli);
         }
-      }
+      } catch (e) {}
+    }
+  }
 
-      await tambahLogAudit("JANA_CAJ_YURAN", bulan, null, { kadarSen, cajBaru }, "Kadar disahkan Bendahari");
-      state.info = `Kadar ${formatRM(kadarSen)} disahkan. ${cajBaru} caj baharu dijana untuk ${formatTarikhMY(bulan)}.`;
-      simpanKeadaan();
-      render();
-    };
+  try {
+    const pemisah = SHEET_AHLI_CSV_URL.includes("?") ? "&" : "?";
+    const urlTanpaCache = `${SHEET_AHLI_CSV_URL}${pemisah}_=${Date.now()}`;
+    const respon = await fetch(urlTanpaCache);
+    if (!respon.ok) throw new Error("Gagal memuat turun CSV Google Sheet");
 
-    window.aksiTambahAhliManual = async function (e) {
-      e.preventDefault();
-      state.ralat = null;
-      if (state.peranan === "juruaudit") {
-        state.ralat = "DITOLAK: Juruaudit tidak boleh mengubah senarai ahli.";
-        render();
-        return;
-      }
+    const teksCSV = await respon.text();
+    const semuaBaris = pecahBarisCSV(teksCSV);
 
-      const form = e.target;
-      const noAhli = form.no_ahli.value.trim();
-      const nama = form.nama_penuh.value.trim();
-      if (!/^KMTWP\/\d{4}\/\d{4,}$/.test(noAhli)) {
-        state.ralat = "Format No. ahli mesti KMTWP/tahun/4-digit atau lebih (cth: KMTWP/2026/0006).";
-        render();
-        return;
-      }
-      if (!nama) {
-        state.ralat = "Nama penuh ahli diperlukan.";
-        render();
-        return;
-      }
+    // Cari baris pengepala yang mempunyai nama ahli / no keahlian
+    const indeksHeader = semuaBaris.findIndex((r) =>
+      r.some((sel) => {
+        const s = sel.toLowerCase();
+        return s.includes("nama penuh") || s === "nama" || s.includes("no. keahlian") || s.includes("no. ahli");
+      })
+    );
+    if (indeksHeader === -1) return;
 
-      const sediaAda = state.ahli.find((a) => a.no_ahli === noAhli);
-      if (sediaAda) {
-        sediaAda.nama_penuh = nama;
-        sediaAda.aktif = true;
-        state.info = `Maklumat ahli ${noAhli} dikemas kini.`;
-      } else {
-        state.ahli.push({
-          no_ahli: noAhli,
-          nama_penuh: nama,
-          tarikh_kelulusan: "2026-11-24",
-          bulan_mula_bil: state.bulanAktif,
-          aktif: true
-        });
-        state.info = `Ahli baharu ${noAhli} (${nama}) ditambah.`;
-      }
+    const header = semuaBaris[indeksHeader].map((h) => h.toLowerCase().trim());
+    const idxId = cariIndeksLajur(header, ["id permohonan", "id ahli", "id"]);
+    const idxNama = cariIndeksLajur(header, ["nama penuh", "nama ahli", "nama"]);
+    const idxNoAhli = cariIndeksLajur(header, ["no. keahlian", "no. ahli", "no ahli", "no keahlian"]);
+    const idxKeputusan = cariIndeksLajur(header, ["keputusan permohonan", "keputusan", "status"]);
+    const idxKategori = cariIndeksLajur(header, ["kategori keahlian", "kategori"]);
+    const idxTelefon = cariIndeksLajur(header, ["no. telefon bimbit", "telefon", "whatsapp", "no. tel"]);
 
-      await tambahLogAudit("SELARAS_AHLI", noAhli, null, { noAhli, nama }, "Penyelarasan senarai ahli");
-      simpanKeadaan();
-      render();
-    };
+    const senaraiAhli = semuaBaris
+      .slice(indeksHeader + 1)
+      .map((r) => {
+        const nama = idxNama >= 0 ? r[idxNama] || "" : "";
+        const noAhli =
+          (idxNoAhli >= 0 ? r[idxNoAhli] || "" : "") ||
+          (idxId >= 0 ? r[idxId] || "" : "");
+        const keputusan = idxKeputusan >= 0 ? r[idxKeputusan] || "" : "";
 
-    window.aksiKunciBulan = async function (bulanKey) {
-      state.ralat = null;
-      if (state.peranan === "juruaudit") {
-        state.ralat = "DITOLAK: Juruaudit tidak boleh mengunci bulan.";
-        render();
-        return;
-      }
-      if (!state.bulanDikunci.includes(bulanKey)) {
-        state.bulanDikunci.push(bulanKey);
-        await tambahLogAudit("KUNCI_BULAN", bulanKey, null, { bulanKey, status: "dikunci" }, "Penutupan bulan disahkan");
-        state.info = `Bulan ${bulanKey} telah dikunci.`;
-        simpanKeadaan();
-        render();
-      }
-    };
-
-    window.aksiMuatTurunPakejAudit = async function () {
-      const baki = kiraBaki();
-      const laporan = {
-        kelab: "Kelab Memanah Tradisional Warisan Perdana",
-        dijana_pada: new Date().toISOString(),
-        ringkasan_baki: {
-          bank: formatRM(baki.bank),
-          peti_tunai: formatRM(baki.tunai),
-          jumlah_wang: formatRM(baki.jumlah),
-          pendapatan: formatRM(baki.masuk),
-          perbelanjaan: formatRM(baki.keluar)
-        },
-        jumlah_ahli: state.ahli.length,
-        transaksi: state.transaksi,
-        bukti: state.bukti,
-        log_audit: state.logAudit
-      };
-      const teksJson = JSON.stringify(laporan, null, 2);
-      const cincangLaporan = await sha256Hex(teksJson);
-      await tambahLogAudit("EKSPORT_PAKEJ_AUDIT", "PAKEJ_AUDIT", null, { cincangLaporan }, "Muat turun pakej juruaudit");
-      simpanKeadaan();
-
-      const blob = new Blob([teksJson], { type: "application/json;charset=utf-8" });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = `pakej-audit-kmt-msas-${new Date().toISOString().slice(0, 10)}.json`;
-      a.click();
-      URL.revokeObjectURL(url);
-      render();
-    };
-
-    function render() {
-      const baki = kiraBaki();
-      const ahliTapis = state.ahli.filter((a) =>
-        a.nama_penuh.toLowerCase().includes(state.carianAhli.toLowerCase()) ||
-        a.no_ahli.toLowerCase().includes(state.carianAhli.toLowerCase())
+        return {
+          idPermohonan: idxId >= 0 ? r[idxId] || "" : "",
+          nama,
+          noAhli,
+          keputusan,
+          kategori: idxKategori >= 0 ? r[idxKategori] || "" : "",
+          telefon: idxTelefon >= 0 ? r[idxTelefon] || "" : ""
+        };
+      })
+      .filter(
+        (ahli) =>
+          ahli.nama !== "" &&
+          (!ahli.keputusan ||
+            ahli.keputusan.toLowerCase() === "diluluskan" ||
+            ahli.keputusan.toLowerCase() === "aktif" ||
+            ahli.keputusan.toLowerCase() === "lulus")
       );
 
-      let htmlTab = "";
+    localStorage.setItem(
+      CACHE_KEY_AHLI,
+      JSON.stringify({ masaKemaskini: new Date().toISOString(), ahli: senaraiAhli })
+    );
+    kemaskiniSenaraiAhliAplikasi(senaraiAhli);
+  } catch (err) {
+    console.warn("Gagal menyegerak dari Google Sheet (menggunakan data cache jika ada):", err);
+  }
+}
 
-      if (state.tab === "ringkasan") {
-        htmlTab += `
-          <section class="kad">
-            <h2>1. Wang Sebenar di Bank &amp; Peti Tunai</h2>
-            <div class="grid-2">
-              <div class="baki-kotak">
-                <span>Akaun Bank</span>
-                <strong>${formatRM(baki.bank)}</strong>
-              </div>
-              <div class="baki-kotak">
-                <span>Peti Tunai</span>
-                <strong>${formatRM(baki.tunai)}</strong>
-              </div>
-            </div>
-            <div class="baki-jumlah">
-              <div>
-                <div style="font-size:12px;opacity:0.85;">Jumlah Wang Kelab</div>
-                <div style="font-size:11px;opacity:0.85;">Masuk: ${formatRM(baki.masuk)} · Keluar: ${formatRM(baki.keluar)}</div>
-              </div>
-              <strong>${formatRM(baki.jumlah)}</strong>
-            </div>
-          </section>
+function kemaskiniSenaraiAhliAplikasi(senaraiAhli) {
+  window.DATA_AHLI_KMT = senaraiAhli;
+  if (typeof renderSemuaPaparan === "function") {
+    renderSemuaPaparan();
+  }
+  console.log("Senarai ahli terkini dari Google Sheet:", senaraiAhli.length, senaraiAhli);
+}
 
-          <section class="kad">
-            <h2>2. Status Yuran (${formatTarikhMY(state.bulanAktif)})</h2>
-            <div class="grid-2 jarak-bawah">
-              <select onchange="state.bulanAktif=this.value; simpanKeadaan(); render();">
-                <option value="2026-11-01" ${state.bulanAktif === "2026-11-01" ? "selected" : ""}>11/2026 (Nov)</option>
-                <option value="2026-12-01" ${state.bulanAktif === "2026-12-01" ? "selected" : ""}>12/2026 (Dis)</option>
-              </select>
-              <input type="search" placeholder="Cari nama / KMTWP..." value="${state.carianAhli}" oninput="state.carianAhli=this.value; render();" />
-            </div>
-            ${ahliTapis.map((a) => {
-              const s = kiraStatusYuran(a.no_ahli, state.bulanAktif);
-              return `
-                <div class="senarai-item" style="display:flex;justify-content:space-between;align-items:center;gap:8px;">
-                  <div>
-                    <div style="font-weight:700;font-size:13px;">${a.nama_penuh}</div>
-                    <div class="mono pudding">${a.no_ahli}</div>
-                  </div>
-                  <div style="text-align:right;">
-                    <span class="lencana-status">${s.ikon} ${s.status}</span>
-                    ${s.bakiSen > 0 ? `<div class="pudding">Baki: ${formatRM(s.bakiSen)}</div>` : ""}
-                    ${s.resit.length ? `<div class="mono pudding">${s.resit.join(", ")}</div>` : ""}
-                  </div>
-                </div>
-              `;
-            }).join("")}
-          </section>
-
-          <section class="kad">
-            <h2>3. Bukti &amp; Rujukan Juruaudit</h2>
-            ${state.transaksi.length === 0 ? `<p class="pudding">Belum ada transaksi direkodkan.</p>` : state.transaksi.slice().reverse().map((t) => {
-              const bk = state.bukti.find((b) => b.transaksi_id === t.id);
-              return `
-                <div class="senarai-item">
-                  <div style="display:flex;justify-content:space-between;font-weight:700;font-size:13px;">
-                    <span>${t.nombor_dokumen || "-"} · ${formatTarikhMY(t.tarikh_urus_niaga)}</span>
-                    <span class="mono">${formatRM(t.amaun_sen)}</span>
-                  </div>
-                  <div style="font-size:13px;margin-top:4px;">${t.tujuan}</div>
-                  <div class="pudding" style="margin-top:4px;">
-                    Bukti: ${bk ? `✓ ${bk.nama_fail} (${bk.cincang_sha256.slice(0, 12)}...)` : "— Tiada lampiran"}
-                  </div>
-                </div>
-              `;
-            }).join("")}
-          </section>
-        `;
-      } else if (state.tab === "transaksi") {
-        htmlTab += `
-          <section class="kad">
-            <h2>Terima Bayaran Yuran (Jana Resit)</h2>
-            <form onsubmit="aksiTerimaBayaran(event)">
-              <div class="jarak-bawah">
-                <label class="pudding">Ahli Kelab</label>
-                <select name="no_ahli">
-                  ${state.ahli.map((a) => `<option value="${a.no_ahli}">${a.no_ahli} — ${a.nama_penuh}</option>`).join("")}
-                </select>
-              </div>
-              <div class="grid-2 jarak-bawah">
-                <div>
-                  <label class="pudding">Amaun (RM)</label>
-                  <input type="number" name="amaun_rm" step="0.01" min="0.01" placeholder="10.00" required />
-                </div>
-                <div>
-                  <label class="pudding">Akaun Terima</label>
-                  <select name="akaun_id">
-                    <option value="bank_utama">Akaun Bank</option>
-                    <option value="peti_tunai">Peti Tunai</option>
-                  </select>
-                </div>
-              </div>
-              <div class="jarak-bawah">
-                <label class="pudding">Tarikh Urus Niaga</label>
-                <input type="date" name="tarikh" value="2026-11-24" required />
-              </div>
-              <button type="submit" class="btn-utama">Keluarkan Resit Rasmi</button>
-            </form>
-          </section>
-
-          <section class="kad">
-            <h2>Rekod Perbelanjaan (Jana Baucar &amp; Bukti)</h2>
-            <form onsubmit="aksiRekodBelanja(event)">
-              <div class="jarak-bawah">
-                <label class="pudding">Kategori</label>
-                <select name="kategori">
-                  <option value="Belian Sasaran">Belian Sasaran</option>
-                  <option value="Sewaan Lapang">Sewaan Lapang</option>
-                  <option value="Kos Program">Kos Program</option>
-                  <option value="Caj Bank">Caj Bank</option>
-                </select>
-              </div>
-              <div class="jarak-bawah">
-                <label class="pudding">Penerima</label>
-                <input type="text" name="penerima" placeholder="Nama pembekal / penerima" required />
-              </div>
-              <div class="jarak-bawah">
-                <label class="pudding">Tujuan</label>
-                <input type="text" name="tujuan" placeholder="Contoh: Belian muka sasaran" required />
-              </div>
-              <div class="grid-2 jarak-bawah">
-                <div>
-                  <label class="pudding">Amaun (RM)</label>
-                  <input type="number" name="amaun_rm" step="0.01" min="0.01" placeholder="30.00" required />
-                </div>
-                <div>
-                  <label class="pudding">Akaun Bayar</label>
-                  <select name="akaun_id">
-                    <option value="bank_utama">Akaun Bank</option>
-                    <option value="peti_tunai">Peti Tunai</option>
-                  </select>
-                </div>
-              </div>
-              <div class="grid-2 jarak-bawah">
-                <div>
-                  <label class="pudding">Tarikh</label>
-                  <input type="date" name="tarikh" value="2026-11-24" required />
-                </div>
-                <div>
-                  <label class="pudding">Nama Fail Bukti</label>
-                  <input type="text" name="nama_bukti" placeholder="resit_pembekal.jpg" />
-                </div>
-              </div>
-              <button type="submit" class="btn-sekunder">Rekod Baucar &amp; Cincang Bukti</button>
-            </form>
-          </section>
-        `;
-      } else {
-        htmlTab += `
-          <section class="kad">
-            <h2>Tetapan Kadar &amp; Penjanaan Caj Yuran</h2>
-            <p class="pudding jarak-bawah">Kadar semasa: <strong>${state.kadarBulananSen ? formatRM(state.kadarBulananSen) : "Belum disahkan"}</strong></p>
-            <form onsubmit="aksiJanaCajBulanan(event)">
-              <div class="grid-2 jarak-bawah">
-                <div>
-                  <label class="pudding">Kadar Bulanan (RM)</label>
-                  <input type="number" name="kadar_rm" step="0.01" min="0.01" placeholder="10.00" required />
-                </div>
-                <div>
-                  <label class="pudding">Bulan Caj</label>
-                  <select name="bulan_caj">
-                    <option value="2026-11-01">11/2026</option>
-                    <option value="2026-12-01">12/2026</option>
-                  </select>
-                </div>
-              </div>
-              <button type="submit" class="btn-utama">Sahkan Kadar &amp; Jana Caj</button>
-            </form>
-          </section>
-
-          <section class="kad">
-            <h2>Tambah / Kemas Kini Ahli (Format KMTWP)</h2>
-            <form onsubmit="aksiTambahAhliManual(event)">
-              <div class="jarak-bawah">
-                <label class="pudding">No. Ahli</label>
-                <input type="text" name="no_ahli" placeholder="KMTWP/2026/0006" required />
-              </div>
-              <div class="jarak-bawah">
-                <label class="pudding">Nama Penuh</label>
-                <input type="text" name="nama_penuh" placeholder="Nama ahli diluluskan" required />
-              </div>
-              <button type="submit" class="btn-sekunder">Simpan Ahli</button>
-            </form>
-          </section>
-
-          <section class="kad">
-            <h2>Kunci Bulan &amp; Pakej Juruaudit</h2>
-            <button type="button" class="btn-sekunder jarak-bawah" onclick="aksiKunciBulan('2026-11')">
-              Kunci Bulan 11/2026 ${state.bulanDikunci.includes("2026-11") ? "(TERKUNCI)" : ""}
-            </button>
-            <button type="button" class="btn-utama jarak-bawah" onclick="aksiMuatTurunPakejAudit()">
-              Eksport Pakej Juruaudit (JSON + SHA-256)
-            </button>
-            <div class="pudding">Catatan Log Audit: <strong>${state.logAudit.length}</strong></div>
-          </section>
-        `;
-      }
-
-      document.getElementById("app").innerHTML = `
-        <header class="kepala">
-          <small>Kelab Memanah Tradisional Warisan Perdana</small>
-          <h1>Buku Kewangan KMT MSAS</h1>
-          <div class="bar-peranan">
-            <span>Peranan: <strong>${state.peranan.toUpperCase()}</strong></span>
-            <select onchange="state.peranan=this.value; state.ralat=null; simpanKeadaan(); render();">
-              <option value="bendahari" ${state.peranan === "bendahari" ? "selected" : ""}>Bendahari</option>
-              <option value="pengerusi_ajk" ${state.peranan === "pengerusi_ajk" ? "selected" : ""}>Pengerusi / AJK</option>
-              <option value="setiausaha" ${state.peranan === "setiausaha" ? "selected" : ""}>Setiausaha</option>
-              <option value="juruaudit" ${state.peranan === "juruaudit" ? "selected" : ""}>Juruaudit</option>
-            </select>
-          </div>
-        </header>
-
-        <nav class="tab-nav">
-          <button type="button" class="tab-btn ${state.tab === "ringkasan" ? "aktif" : ""}" onclick="state.tab='ringkasan'; render();">1. Ringkasan</button>
-          <button type="button" class="tab-btn ${state.tab === "transaksi" ? "aktif" : ""}" onclick="state.tab='transaksi'; render();">2. Transaksi</button>
-          <button type="button" class="tab-btn ${state.tab === "tetapan" ? "aktif" : ""}" onclick="state.tab='tetapan'; render();">3. Tetapan &amp; Audit</button>
-        </nav>
-
-        <main class="kandungan">
-          ${state.ralat ? `<div class="ralat" role="alert"><strong>[RALAT]</strong> ${state.ralat}</div>` : ""}
-          ${state.info ? `<div class="amaran"><strong>[MAKLUMAT]</strong> ${state.info}</div>` : ""}
-          ${htmlTab}
-        </main>
-      `;
-    }
-
-    render();
-  </script>
-</body>
-</html>
+window.addEventListener("DOMContentLoaded", () => {
+  segerakAhliDariGoogleSheet(false);
+});
+</script>
