@@ -150,7 +150,10 @@
 </head>
 <body>
 
-<audio id="bgMusic" src="lagu-kelab.mp3" loop preload="auto"></audio>
+<audio id="bgMusic" loop preload="auto">
+  <source src="lagu-kelab.mp3" type="audio/mpeg" />
+  <source src="lagu%20kelab.mp3" type="audio/mpeg" />
+</audio>
 
 <header>
   <div class="brand">
@@ -512,10 +515,10 @@
   localStorage.removeItem("kmt_members");
   localStorage.removeItem("kmt_members_v2");
 
-  let members = JSON.parse(localStorage.getItem("kmt_members_v9") || "[]");
-  let transactions = JSON.parse(localStorage.getItem("kmt_tx_v9") || "[]");
-  let monthlyFee = parseFloat(localStorage.getItem("kmt_fee_v9") || "10.00");
-  let gasWebhookUrl = localStorage.getItem("kmt_gas_webhook_v9") || DEFAULT_GAS_WEBHOOK;
+  let members = JSON.parse(localStorage.getItem("kmt_members_v10") || "[]");
+  let transactions = JSON.parse(localStorage.getItem("kmt_tx_v10") || "[]");
+  let monthlyFee = parseFloat(localStorage.getItem("kmt_fee_v10") || "10.00");
+  let gasWebhookUrl = localStorage.getItem("kmt_gas_webhook_v10") || DEFAULT_GAS_WEBHOOK;
   let selectedMemberObj = null;
   let modalMode = "paid";
   let lastSyncStr = "-";
@@ -579,3 +582,609 @@
       btn.textContent = "🔇 Muzik";
       if (audio) audio.pause();
       stopFallbackAmbient();
+    }
+  }
+
+  document.getElementById("bgMusic").addEventListener("error", () => {
+    mp3Available = false;
+  });
+
+  function initForms() {
+    document.getElementById("monthlyFeeInput").value = monthlyFee.toFixed(2);
+    document.getElementById("feeAmountInput").value = monthlyFee.toFixed(2);
+    document.getElementById("gasWebhookInput").value = gasWebhookUrl;
+    updateGasStatusText();
+
+    ["statusMonthSelect", "feeMonthSelect", "editTxMonth"].forEach(id => {
+      const el = document.getElementById(id);
+      el.innerHTML = MONTH_OPTIONS.map(m => `<option value="${m.ym}">${m.label}</option>`).join("");
+    });
+
+    const now = new Date();
+    const curYm = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
+    const defaultYm = MONTH_OPTIONS.some(m => m.ym === curYm) ? curYm : "2026-12";
+    const activeYm = defaultYm < START_BILLING_YM ? START_BILLING_YM : defaultYm;
+
+    document.getElementById("statusMonthSelect").value = activeYm;
+    document.getElementById("feeMonthSelect").value = activeYm;
+
+    const today = now.toISOString().split("T")[0];
+    document.getElementById("feeDateInput").value = today;
+    document.getElementById("incDateInput").value = today;
+    document.getElementById("expDateInput").value = today;
+  }
+
+  function saveGasWebhook() {
+    gasWebhookUrl = document.getElementById("gasWebhookInput").value.trim() || DEFAULT_GAS_WEBHOOK;
+    localStorage.setItem("kmt_gas_webhook_v10", gasWebhookUrl);
+    updateGasStatusText();
+    alert("Pautan Web App Google Sheet berjaya disimpan.");
+  }
+
+  function updateGasStatusText() {
+    const el = document.getElementById("gasStatusText");
+    if (!el) return;
+    el.textContent = gasWebhookUrl
+      ? "Status: Sambungan ke tab 'Rekod Kewangan Keluar Masuk' Google Sheet AKTIF."
+      : "Status: Belum disambungkan.";
+  }
+
+  async function sendTxToGoogleSheet(txObj) {
+    const targetUrl = gasWebhookUrl || DEFAULT_GAS_WEBHOOK;
+    if (!targetUrl) return false;
+    const payload = {
+      id: txObj.id,
+      date: txObj.date,
+      flow: txObj.flow === "IN" ? "MASUK" : "KELUAR",
+      sourceLabel: txObj.sourceLabel,
+      desc: txObj.desc,
+      refNo: txObj.refNo || "",
+      account: txObj.account,
+      amount: Number(txObj.amount || 0),
+      memberId: txObj.memberId || "",
+      forMonth: txObj.forMonth || ""
+    };
+
+    try {
+      await fetch(targetUrl, {
+        method: "POST",
+        mode: "no-cors",
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        body: JSON.stringify(payload)
+      });
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  async function pushAllLocalToSheet() {
+    if (transactions.length === 0) {
+      alert("Tiada rekod transaksi untuk dihantar.");
+      return;
+    }
+    for (let i = transactions.length - 1; i >= 0; i--) {
+      await sendTxToGoogleSheet(transactions[i]);
+    }
+    alert(`Selesai menghantar ${transactions.length} rekod transaksi ke tab 'Rekod Kewangan Keluar Masuk' di Google Sheet.`);
+  }
+
+  function saveFeeRate() {
+    const val = parseFloat(document.getElementById("monthlyFeeInput").value);
+    if (!isNaN(val) && val > 0) {
+      monthlyFee = val;
+      localStorage.setItem("kmt_fee_v10", String(monthlyFee));
+      document.getElementById("feeAmountInput").value = monthlyFee.toFixed(2);
+      renderAll();
+    }
+  }
+
+  function parseCSV(text) {
+    const rows = [];
+    let cur = "", inQuotes = false, row = [];
+    for (let i = 0; i < text.length; i++) {
+      const c = text[i], next = text[i + 1];
+      if (c === '"' && inQuotes && next === '"') { cur += '"'; i++; }
+      else if (c === '"') { inQuotes = !inQuotes; }
+      else if (c === "," && !inQuotes) { row.push(cur.trim()); cur = ""; }
+      else if ((c === "\n" || c === "\r") && !inQuotes) {
+        if (cur.length || row.length) { row.push(cur.trim()); rows.push(row); }
+        cur = ""; row = [];
+        if (c === "\r" && next === "\n") i++;
+      } else cur += c;
+    }
+    if (cur.length || row.length) { row.push(cur.trim()); rows.push(row); }
+    return rows;
+  }
+
+  function isValidMemberName(name) {
+    if (!name) return false;
+    const low = name.toLowerCase().trim();
+    if (low === "nama penuh" || low === "nama" || low === "full name" || low === "timestamp") return false;
+    if (low.includes("buka kelulusan") || low.includes("menyemak dan merekodkan") || low.includes("keputusan")) return false;
+    if (low.length < 3) return false;
+    return true;
+  }
+
+  function normalizeIdKey(idStr) {
+    return String(idStr || "").trim().toLowerCase();
+  }
+
+  async function syncMembers(showNotice = false) {
+    try {
+      const res = await fetch(GOOGLE_SHEET_CSV + "&t=" + Date.now());
+      const csv = await res.text();
+      const rows = parseCSV(csv);
+      if (rows.length > 1) {
+        const headers = rows[0].map(h => h.toLowerCase());
+        const nameIdx = headers.findIndex(h => h.includes("nama"));
+        const idIdx = headers.findIndex(h => h.includes("no. ahli") || h.includes("no ahli") || h.includes("id ahli") || h === "id");
+        const emailIdx = headers.findIndex(h => h.includes("email") || h.includes("emel") || h.includes("e-mel"));
+
+        const cleanList = [];
+        let seq = 1;
+        for (let i = 1; i < rows.length; i++) {
+          const r = rows[i];
+          const rawName = (nameIdx >= 0 ? r[nameIdx] : r[1] || r[0] || "").trim();
+          if (!isValidMemberName(rawName)) continue;
+
+          let memberId = (idIdx >= 0 ? r[idIdx] : "").trim();
+          if (!memberId) {
+            memberId = `KMTWP/2026/${String(seq).padStart(4, "0")}`;
+          }
+          seq++;
+
+          const email = (emailIdx >= 0 ? r[emailIdx] : "").trim();
+          cleanList.push({ id: memberId, name: rawName, email });
+        }
+
+        if (cleanList.length > 0) {
+          members = cleanList;
+          localStorage.setItem("kmt_members_v10", JSON.stringify(members));
+        }
+      }
+      lastSyncStr = new Date().toLocaleTimeString("ms-MY");
+      document.getElementById("syncBannerText").textContent = `Senarai nama ahli dikemas kini (${members.length} ahli) • ${lastSyncStr}`;
+      if (showNotice) alert(`Senarai nama ahli dikemas kini (${members.length} ahli).`);
+    } catch (err) {
+      document.getElementById("syncBannerText").textContent = `Mod luar talian (${members.length} ahli berdaftar)`;
+    }
+    renderAll();
+  }
+
+  function lookupMemberById() {
+    const query = document.getElementById("feeMemberIdInput").value.trim().toLowerCase();
+    const infoBox = document.getElementById("feeMatchedMemberInfo");
+    if (!query) {
+      selectedMemberObj = null;
+      infoBox.innerHTML = `Nama Ahli: <strong>Belum dijumpai</strong> — Masukkan nombor ID ahli di atas.`;
+      return;
+    }
+
+    const found = members.find(m => {
+      const fullId = m.id.toLowerCase();
+      const lastPart = fullId.split("/").pop() || "";
+      return (
+        fullId === query ||
+        fullId.endsWith(query) ||
+        lastPart === query ||
+        lastPart.replace(/^0+/, "") === query.replace(/^0+/, "")
+      );
+    });
+
+    if (found) {
+      selectedMemberObj = found;
+      infoBox.innerHTML = `Nama Ahli: <strong>${found.name}</strong> <span style="font-size:11px;">(${found.id})</span>`;
+    } else {
+      selectedMemberObj = null;
+      infoBox.innerHTML = `Nama Ahli: <span style="color:var(--danger); font-weight:700;">Tiada ahli dengan ID tersebut</span>`;
+    }
+  }
+
+  function getPaidForMonth(memberId, ym) {
+    const targetKey = normalizeIdKey(memberId);
+    const targetTail = targetKey.split("/").pop() || "";
+    return transactions
+      .filter(t => {
+        if (t.categoryType !== "FEE" || t.forMonth !== ym) return false;
+        const txKey = normalizeIdKey(t.memberId);
+        const txTail = txKey.split("/").pop() || "";
+        return txKey === targetKey || (targetTail && txTail === targetTail);
+      })
+      .reduce((acc, t) => acc + Number(t.amount || 0), 0);
+  }
+
+  function evaluateMonth(ym) {
+    const isActive = ym >= START_BILLING_YM;
+    const monthNum = getMonthNumberLabel(ym);
+    const paid = [];
+    const unpaid = [];
+
+    members.forEach(m => {
+      const paidAmt = getPaidForMonth(m.id, ym);
+      const isPaid = paidAmt > 0;
+      const statusLabel = isPaid
+        ? `Pembayaran yuran bulan ${monthNum} selesai`
+        : (!isActive ? "Mula 12/2026" : "Belum bayar yuran");
+      const item = { ...m, paidAmt, isPaid, isActive, statusLabel };
+      if (isPaid) paid.push(item);
+      else unpaid.push(item);
+    });
+
+    return { isActive, monthNum, paid, unpaid };
+  }
+
+  function renderStatusSection() {
+    const ym = document.getElementById("statusMonthSelect").value;
+    const total = members.length;
+    const { isActive, paid, unpaid } = evaluateMonth(ym);
+
+    document.getElementById("memberCountSummary").textContent = `Jumlah ahli berdaftar: ${total}`;
+    document.getElementById("paidCountHeadline").textContent = `${paid.length}/${total} sudah buat bayaran bulan semasa`;
+    document.getElementById("unpaidCountHeadline").textContent = `${unpaid.length}/${total} belum buat bayaran bulan semasa`;
+
+    const paidShort = document.getElementById("paidShortList");
+    if (paid.length === 0) {
+      paidShort.innerHTML = `<div style="font-size:12px; color:var(--muted);">Belum ada ahli yang sudah membuat bayaran bagi bulan ini.</div>`;
+    } else {
+      paidShort.innerHTML = paid.slice(0, 2).map(m => `
+        <div class="member-row">
+          <div>
+            <div class="m-name">${m.name}</div>
+            <div class="m-id">${m.id} • RM ${m.paidAmt.toFixed(2)}</div>
+          </div>
+          <span class="tag-paid">${m.statusLabel}</span>
+        </div>
+      `).join("");
+    }
+
+    const unpaidShort = document.getElementById("unpaidShortList");
+    if (unpaid.length === 0) {
+      unpaidShort.innerHTML = `<div style="font-size:12px; color:var(--success); font-weight:700;">Semua ahli berdaftar sudah membuat bayaran bagi bulan ini.</div>`;
+    } else {
+      unpaidShort.innerHTML = unpaid.slice(0, 2).map(m => `
+        <div class="member-row">
+          <div>
+            <div class="m-name">${m.name}</div>
+            <div class="m-id">${m.id}</div>
+          </div>
+          <div style="display:flex; flex-direction:column; align-items:flex-end; gap:4px;">
+            <span class="${isActive ? 'tag-unpaid' : 'tag-pre'}">${m.statusLabel}</span>
+            ${isActive ? `<button type="button" class="btn btn-email" onclick="sendEmailNotice('${m.id}', '${ym}')">Notis E-mel</button>` : ""}
+          </div>
+        </div>
+      `).join("");
+    }
+  }
+
+  function openListModal(mode) {
+    modalMode = mode;
+    document.getElementById("listModalSearch").value = "";
+    document.getElementById("listModalTitle").textContent =
+      mode === "paid" ? "Senarai Penuh: Sudah Buat Bayaran" : "Senarai Penuh: Belum Buat Bayaran";
+    renderListModal();
+    document.getElementById("listModal").classList.add("open");
+  }
+
+  function closeListModal() {
+    document.getElementById("listModal").classList.remove("open");
+  }
+
+  function renderListModal() {
+    const ym = document.getElementById("statusMonthSelect").value;
+    const q = document.getElementById("listModalSearch").value.trim().toLowerCase();
+    const { isActive, paid, unpaid } = evaluateMonth(ym);
+    const list = modalMode === "paid" ? paid : unpaid;
+    const filtered = list.filter(m => m.name.toLowerCase().includes(q) || m.id.toLowerCase().includes(q));
+
+    const body = document.getElementById("listModalBody");
+    if (filtered.length === 0) {
+      body.innerHTML = `<div style="font-size:13px; color:var(--muted); padding:10px 0;">Tiada ahli dalam senarai ini.</div>`;
+      return;
+    }
+
+    body.innerHTML = filtered.map(m => `
+      <div class="member-row">
+        <div>
+          <div class="m-name">${m.name}</div>
+          <div class="m-id">${m.id}${m.isPaid ? " • RM " + m.paidAmt.toFixed(2) : (m.email ? " • " + m.email : "")}</div>
+        </div>
+        <div style="display:flex; flex-direction:column; align-items:flex-end; gap:4px;">
+          <span class="${m.isPaid ? 'tag-paid' : (isActive ? 'tag-unpaid' : 'tag-pre')}">${m.statusLabel}</span>
+          ${(!m.isPaid && isActive) ? `<button type="button" class="btn btn-email" onclick="sendEmailNotice('${m.id}', '${ym}')">Notis E-mel</button>` : ""}
+        </div>
+      </div>
+    `).join("");
+  }
+
+  function sendEmailNotice(memberId, ym) {
+    const m = members.find(x => x.id === memberId);
+    if (!m) return;
+    const mObj = MONTH_OPTIONS.find(x => x.ym === ym);
+    const label = mObj ? mObj.label : ym;
+    const subject = encodeURIComponent(`Notis Pembayaran Yuran Bulanan KMT MSAS (${label})`);
+    const body = encodeURIComponent(
+      `Assalamualaikum & Salam Sejahtera ${m.name} (${m.id}),\n\n` +
+      `Peringatan pembayaran yuran bulanan Kelab Memanah Tradisional Warisan Perdana Sg Isap bagi bulan ${label} berjumlah RM ${monthlyFee.toFixed(2)}.\n\n` +
+      `Mohon kerjasama untuk menjelaskan bayaran kepada Bendahari Kelab. Terima kasih.\nBendahari KMT MSAS`
+    );
+    window.location.href = `mailto:${m.email || ""}?subject=${subject}&body=${body}`;
+  }
+
+  async function recordFeePayment() {
+    if (!selectedMemberObj) lookupMemberById();
+    if (!selectedMemberObj) {
+      alert("Sila masukkan nombor ID ahli yang sah dahulu.");
+      return;
+    }
+    const forMonth = document.getElementById("feeMonthSelect").value;
+    const amount = parseFloat(document.getElementById("feeAmountInput").value);
+    const receiptNo = document.getElementById("feeReceiptInput").value.trim();
+    const account = document.getElementById("feeAccountSelect").value;
+    const date = document.getElementById("feeDateInput").value;
+
+    if (isNaN(amount) || amount <= 0) {
+      alert("Sila masukkan amaun yuran yang sah.");
+      return;
+    }
+
+    const mNum = getMonthNumberLabel(forMonth);
+    const txObj = {
+      id: "TX-" + Date.now(),
+      flow: "IN",
+      categoryType: "FEE",
+      sourceLabel: "Yuran Ahli",
+      memberId: selectedMemberObj.id,
+      memberName: selectedMemberObj.name,
+      forMonth,
+      refNo: receiptNo,
+      desc: `Yuran (${forMonth}) - ${selectedMemberObj.name} [${selectedMemberObj.id}]`,
+      amount,
+      account,
+      date
+    };
+
+    transactions.unshift(txObj);
+    const sent = await sendTxToGoogleSheet(txObj);
+
+    document.getElementById("statusMonthSelect").value = forMonth;
+    document.getElementById("feeMemberIdInput").value = "";
+    document.getElementById("feeReceiptInput").value = "";
+    lookupMemberById();
+    saveAndRender();
+    switchPage("status");
+    alert(`Pembayaran yuran bulan ${mNum} selesai untuk ${txObj.memberName} (RM ${amount.toFixed(2)}).${sent ? "\nData telah dihantar ke Google Sheet." : ""}`);
+  }
+
+  async function recordOtherIncome() {
+    const source = document.getElementById("incSourceSelect").value;
+    const amount = parseFloat(document.getElementById("incAmountInput").value);
+    const receiptNo = document.getElementById("incReceiptInput").value.trim();
+    const detail = document.getElementById("incDescInput").value.trim();
+    const account = document.getElementById("incAccountSelect").value;
+    const date = document.getElementById("incDateInput").value;
+
+    if (isNaN(amount) || amount <= 0) {
+      alert("Sila masukkan amaun pendapatan yang sah.");
+      return;
+    }
+    if (!receiptNo) {
+      alert("Sila masukkan nombor resit yang diberikan oleh Bendahari kelab.");
+      return;
+    }
+
+    const txObj = {
+      id: "TX-" + Date.now(),
+      flow: "IN",
+      categoryType: "OTHER_INCOME",
+      sourceLabel: source,
+      refNo: receiptNo,
+      desc: `${source}${detail ? " - " + detail : ""}`,
+      amount,
+      account,
+      date
+    };
+
+    transactions.unshift(txObj);
+    const sent = await sendTxToGoogleSheet(txObj);
+
+    document.getElementById("incAmountInput").value = "";
+    document.getElementById("incReceiptInput").value = "";
+    document.getElementById("incDescInput").value = "";
+    saveAndRender();
+    switchPage("status");
+    alert(`Dana ${source} (No. Resit: ${receiptNo}) RM ${amount.toFixed(2)} direkodkan.${sent ? "\nData telah dihantar ke Google Sheet." : ""}`);
+  }
+
+  async function recordExpense() {
+    const cat = document.getElementById("expCategorySelect").value;
+    const authRef = document.getElementById("expAuthRefInput").value.trim();
+    const payee = document.getElementById("expPayeeInput").value.trim();
+    const purpose = document.getElementById("expPurposeInput").value.trim();
+    const amount = parseFloat(document.getElementById("expAmountInput").value);
+    const account = document.getElementById("expAccountSelect").value;
+    const date = document.getElementById("expDateInput").value;
+
+    if (!payee || isNaN(amount) || amount <= 0) {
+      alert("Sila masukkan nama penerima dan amaun perbelanjaan.");
+      return;
+    }
+    if (!authRef) {
+      alert("Sila masukkan rujukan resit / surat / kuasa pengeluaran duit kelab.");
+      return;
+    }
+
+    const txObj = {
+      id: "TX-" + Date.now(),
+      flow: "OUT",
+      categoryType: "EXPENSE",
+      sourceLabel: cat,
+      refNo: authRef,
+      desc: `${cat}: ${payee}${purpose ? " (" + purpose + ")" : ""}`,
+      amount,
+      account,
+      date
+    };
+
+    transactions.unshift(txObj);
+    const sent = await sendTxToGoogleSheet(txObj);
+
+    document.getElementById("expAuthRefInput").value = "";
+    document.getElementById("expPayeeInput").value = "";
+    document.getElementById("expPurposeInput").value = "";
+    document.getElementById("expAmountInput").value = "";
+    saveAndRender();
+    switchPage("status");
+    alert(`Perbelanjaan RM ${amount.toFixed(2)} direkodkan.${sent ? "\nData telah dihantar ke Google Sheet." : ""}`);
+  }
+
+  function renderFinanceSummary() {
+    let bank = 0, cash = 0, totalIn = 0, totalOut = 0;
+    const sourceTotals = {};
+
+    transactions.forEach(t => {
+      const amt = Number(t.amount || 0);
+      if (t.flow === "IN") {
+        totalIn += amt;
+        const lbl = t.sourceLabel || "Pendapatan Lain";
+        sourceTotals[lbl] = (sourceTotals[lbl] || 0) + amt;
+        if (t.account === "Akaun Bank") bank += amt;
+        else cash += amt;
+      } else {
+        totalOut += amt;
+        if (t.account === "Akaun Bank") bank -= amt;
+        else cash -= amt;
+      }
+    });
+
+    document.getElementById("bankBalance").textContent = `RM ${bank.toFixed(2)}`;
+    document.getElementById("cashBalance").textContent = `RM ${cash.toFixed(2)}`;
+    document.getElementById("totalBalance").textContent = `RM ${(bank + cash).toFixed(2)}`;
+    document.getElementById("inOutBreakdown").textContent = `Masuk: RM ${totalIn.toFixed(2)} • Keluar: RM ${totalOut.toFixed(2)}`;
+
+    const srcKeys = Object.keys(sourceTotals);
+    const srcEl = document.getElementById("incomeSourcesSummary");
+    if (srcKeys.length === 0) {
+      srcEl.innerHTML = `<span style="color:var(--muted);">Belum ada sumber pendapatan direkodkan.</span>`;
+    } else {
+      srcEl.innerHTML = srcKeys.map(k =>
+        `<span style="display:inline-block; background:#ecfdf5; color:#065f46; padding:3px 8px; border-radius:8px; margin:2px 4px 2px 0; font-weight:700;">${k}: RM ${sourceTotals[k].toFixed(2)}</span>`
+      ).join("");
+    }
+
+    const auditEl = document.getElementById("recentAuditList");
+    if (transactions.length === 0) {
+      auditEl.innerHTML = "Belum ada transaksi direkodkan.";
+    } else {
+      auditEl.innerHTML = transactions.slice(0, 5).map(t => `
+        <div class="member-row">
+          <div>
+            <div class="m-name">${t.desc}</div>
+            <div class="m-id">${t.date} • ${t.account}${t.refNo ? " • Ruj/Resit: " + t.refNo : ""}</div>
+          </div>
+          <strong style="font-size:12px; color:${t.flow === 'IN' ? 'var(--success)' : 'var(--danger)'};">
+            ${t.flow === 'IN' ? '+' : '-'} RM ${Number(t.amount).toFixed(2)}
+          </strong>
+        </div>
+      `).join("");
+    }
+  }
+
+  function renderCorrections() {
+    const box = document.getElementById("correctionListContainer");
+    if (transactions.length === 0) {
+      box.innerHTML = `<div style="font-size:13px; color:var(--muted); padding:10px 0;">Tiada rekod transaksi untuk dibetulkan.</div>`;
+      return;
+    }
+
+    box.innerHTML = transactions.map(t => `
+      <div class="member-row" style="flex-direction:column; align-items:stretch;">
+        <div>
+          <div style="font-size:12px; font-weight:800; color:${t.flow === 'IN' ? 'var(--success)' : 'var(--danger)'};">
+            ${t.flow === 'IN' ? '+ MASUK (' + (t.sourceLabel || 'Pendapatan') + ')' : '- KELUAR (Perbelanjaan)'}: RM ${Number(t.amount).toFixed(2)}
+          </div>
+          <div style="font-size:13px; margin-top:2px;">${t.desc}</div>
+          <div class="m-id">${t.date} • ${t.account}${t.refNo ? " • No. Resit/Rujukan: " + t.refNo : ""}${t.forMonth ? " • Bulan: " + t.forMonth : ""}</div>
+        </div>
+        <div style="display:flex; gap:8px; justify-content:flex-end; margin-top:8px; padding-top:8px; border-top:1px solid var(--border);">
+          <button type="button" class="btn btn-edit" onclick="openEditTx('${t.id}')">Edit Data</button>
+          <button type="button" class="btn btn-del" onclick="deleteTx('${t.id}')">Padam</button>
+        </div>
+      </div>
+    `).join("");
+  }
+
+  function openEditTx(id) {
+    const t = transactions.find(x => x.id === id);
+    if (!t) return;
+    document.getElementById("editTxId").value = t.id;
+    document.getElementById("editTxDesc").value = t.desc;
+    document.getElementById("editTxRef").value = t.refNo || "";
+    document.getElementById("editTxAmount").value = t.amount;
+    document.getElementById("editTxAccount").value = t.account;
+    document.getElementById("editTxDate").value = t.date;
+    const mWrap = document.getElementById("editFeeMonthWrap");
+    if (t.categoryType === "FEE") {
+      mWrap.style.display = "block";
+      document.getElementById("editTxMonth").value = t.forMonth || START_BILLING_YM;
+    } else {
+      mWrap.style.display = "none";
+    }
+    document.getElementById("editModal").classList.add("open");
+  }
+
+  function closeEditModal() {
+    document.getElementById("editModal").classList.remove("open");
+  }
+
+  function saveEditedTx() {
+    const id = document.getElementById("editTxId").value;
+    const idx = transactions.findIndex(x => x.id === id);
+    if (idx === -1) return;
+    const amt = parseFloat(document.getElementById("editTxAmount").value);
+    if (isNaN(amt) || amt <= 0) {
+      alert("Amaun mestilah lebih besar daripada 0.");
+      return;
+    }
+    transactions[idx].desc = document.getElementById("editTxDesc").value.trim();
+    transactions[idx].refNo = document.getElementById("editTxRef").value.trim();
+    transactions[idx].amount = amt;
+    transactions[idx].account = document.getElementById("editTxAccount").value;
+    transactions[idx].date = document.getElementById("editTxDate").value;
+    if (transactions[idx].categoryType === "FEE") {
+      transactions[idx].forMonth = document.getElementById("editTxMonth").value;
+    }
+    saveAndRender();
+    closeEditModal();
+  }
+
+  function deleteTx(id) {
+    if (!confirm("Padam rekod transaksi ini?")) return;
+    transactions = transactions.filter(x => x.id !== id);
+    saveAndRender();
+  }
+
+  function saveAndRender() {
+    localStorage.setItem("kmt_tx_v10", JSON.stringify(transactions));
+    renderAll();
+  }
+
+  function switchPage(page) {
+    ["status", "bayar", "belanja", "pembetulan"].forEach(p => {
+      document.getElementById(`page-${p}`).classList.toggle("active", p === page);
+      document.getElementById(`nav-${p}`).classList.toggle("active", p === page);
+    });
+  }
+
+  function renderAll() {
+    renderFinanceSummary();
+    renderStatusSection();
+    renderCorrections();
+  }
+
+  initForms();
+  renderAll();
+  syncMembers(false);
+</script>
+</body>
+</html>
