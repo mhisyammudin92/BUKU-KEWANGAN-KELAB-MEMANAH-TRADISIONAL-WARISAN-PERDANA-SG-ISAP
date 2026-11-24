@@ -12,107 +12,127 @@
     :root {
       --primary: #064e3b;
       --primary-light: #047857;
-      --accent: #d97706;
       --bg: #f3f4f6;
       --card: #ffffff;
       --text: #111827;
       --muted: #6b7280;
       --border: #e5e7eb;
-      --danger: #dc2626;
       --success: #059669;
+      --danger: #dc2626;
+      --warn-bg: #fef3c7;
+      --warn-text: #92400e;
     }
     * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-    body { margin: 0; background: var(--bg); color: var(--text); padding-bottom: 84px; }
+    body { margin: 0; background: var(--bg); color: var(--text); padding-bottom: 36px; }
+
     header {
       background: var(--primary); color: #fff; padding: 14px 16px;
-      display: flex; align-items: center; gap: 12px; position: sticky; top: 0; z-index: 20;
+      display: flex; align-items: center; gap: 12px; position: sticky; top: 0; z-index: 25;
       box-shadow: 0 2px 6px rgba(0,0,0,0.12);
     }
-    header img { width: 38px; height: 38px; border-radius: 8px; background: #fff; object-fit: cover; }
-    header h1 { font-size: 16px; margin: 0; line-height: 1.2; }
-    header p { font-size: 11px; margin: 2px 0 0; opacity: 0.85; }
+    header img { width: 40px; height: 40px; border-radius: 9px; background: #fff; object-fit: cover; }
+    header h1 { font-size: 16px; margin: 0; line-height: 1.25; }
+    header p { font-size: 11px; margin: 2px 0 0; opacity: 0.88; }
+
     .container { max-width: 640px; margin: 0 auto; padding: 12px; }
-    .sync-banner {
-      background: #fef3c7; border: 1px solid #f59e0b; color: #92400e;
-      padding: 8px 12px; border-radius: 10px; font-size: 12px; margin-bottom: 12px;
-      display: flex; justify-content: space-between; align-items: center; gap: 8px;
+
+    .top-tabs {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 12px;
     }
-    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
+    .top-tab {
+      background: #fff; border: 1px solid var(--border); border-radius: 12px;
+      padding: 10px 8px; font-size: 13px; font-weight: 700; color: var(--text);
+      cursor: pointer; text-align: center;
+    }
+    .top-tab.active {
+      background: var(--primary); color: #fff; border-color: var(--primary);
+    }
+
+    .notice-banner {
+      background: var(--warn-bg); border: 1px solid #f59e0b; color: var(--warn-text);
+      padding: 10px 12px; border-radius: 12px; font-size: 12px; font-weight: 600;
+      margin-bottom: 12px;
+    }
+
     .card {
-      background: var(--card); border: 1px solid var(--border); border-radius: 14px;
-      padding: 14px; margin-bottom: 12px; box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+      background: var(--card); border: 1px solid var(--border); border-radius: 16px;
+      padding: 14px; margin-bottom: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.04);
     }
-    .stat-label { font-size: 12px; color: var(--muted); margin-bottom: 4px; }
-    .stat-val { font-size: 20px; font-weight: 700; }
-    .total-box {
+    .section-title { font-size: 16px; font-weight: 800; margin: 0 0 10px; color: var(--primary); }
+
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
+    .mini-box {
+      border: 1px solid var(--border); border-radius: 12px; padding: 12px; background: #fff;
+    }
+    .mini-label { font-size: 12px; color: var(--muted); margin-bottom: 4px; }
+    .mini-val { font-size: 19px; font-weight: 800; }
+
+    .total-banner {
       background: var(--primary); color: #fff; border-radius: 14px; padding: 14px 16px;
-      display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;
+      display: flex; justify-content: space-between; align-items: center; margin-top: 8px;
     }
-    .total-box .big { font-size: 22px; font-weight: 800; }
-    .section-title { font-size: 16px; font-weight: 700; margin: 0 0 10px; color: var(--primary); }
-    label { display: block; font-size: 12px; font-weight: 600; color: #374151; margin-bottom: 4px; }
-    input, select, textarea {
+    .total-banner .big { font-size: 22px; font-weight: 800; }
+
+    .partition-box {
+      border: 1px solid var(--border); border-radius: 14px; padding: 12px;
+      margin-bottom: 12px; background: #fafafa;
+    }
+    .partition-header {
+      display: flex; justify-content: space-between; align-items: center; gap: 8px;
+      margin-bottom: 8px;
+    }
+    .partition-title { font-size: 13px; font-weight: 800; }
+    .partition-count { font-size: 12px; font-weight: 700; padding: 3px 8px; border-radius: 8px; }
+    .count-paid { background: #d1fae5; color: #065f46; }
+    .count-unpaid { background: #fee2e2; color: #991b1b; }
+
+    .member-row {
+      background: #fff; border: 1px solid var(--border); border-radius: 10px;
+      padding: 9px 11px; margin-bottom: 6px; display: flex;
+      justify-content: space-between; align-items: center; gap: 8px;
+    }
+    .member-row:last-child { margin-bottom: 0; }
+    .m-name { font-size: 12px; font-weight: 700; text-transform: uppercase; }
+    .m-id { font-size: 11px; color: var(--muted); }
+
+    label { display: block; font-size: 12px; font-weight: 700; color: #374151; margin-bottom: 4px; }
+    input, select {
       width: 100%; padding: 10px 12px; border: 1px solid #d1d5db; border-radius: 10px;
       font-size: 14px; background: #fff; color: var(--text);
     }
     input:focus, select:focus { outline: none; border-color: var(--primary); }
+
     .btn {
       display: inline-flex; align-items: center; justify-content: center; gap: 6px;
-      padding: 10px 14px; border-radius: 10px; border: none; font-size: 14px; font-weight: 600;
-      cursor: pointer; transition: 0.15s;
+      padding: 9px 12px; border-radius: 10px; border: none; font-size: 13px; font-weight: 700;
+      cursor: pointer;
     }
-    .btn-primary { background: var(--primary); color: #fff; width: 100%; }
+    .btn-primary { background: var(--primary); color: #fff; width: 100%; padding: 12px; font-size: 14px; }
     .btn-primary:active { background: var(--primary-light); }
-    .btn-outline { background: #fff; border: 1px solid #d1d5db; color: var(--text); font-size: 12px; padding: 7px 11px; }
-    .btn-email { background: #eff6ff; border: 1px solid #93c5fd; color: #1d4ed8; font-size: 11px; padding: 5px 9px; border-radius: 8px; }
-    .btn-danger { background: #fef2f2; border: 1px solid #fca5a5; color: var(--danger); font-size: 12px; padding: 6px 10px; }
-    .btn-edit { background: #fffbeb; border: 1px solid #fcd34d; color: #b45309; font-size: 12px; padding: 6px 10px; }
-    .sub-tabs { display: flex; gap: 6px; margin: 10px 0; overflow-x: auto; }
-    .sub-tab {
-      flex: 1; text-align: center; padding: 8px 6px; border-radius: 10px; font-size: 12px;
-      font-weight: 600; border: 1px solid var(--border); background: #f9fafb; color: var(--muted); cursor: pointer;
+    .btn-outline { background: #fff; border: 1px solid #d1d5db; color: var(--text); font-size: 12px; padding: 7px 10px; }
+    .btn-list { background: #ecfdf5; border: 1px solid #6ee7b7; color: #065f46; font-size: 11px; padding: 6px 10px; }
+    .btn-list-unpaid { background: #fef2f2; border: 1px solid #fca5a5; color: #991b1b; font-size: 11px; padding: 6px 10px; }
+    .btn-email { background: #eff6ff; border: 1px solid #93c5fd; color: #1d4ed8; font-size: 11px; padding: 5px 8px; border-radius: 8px; }
+    .btn-edit { background: #fffbeb; border: 1px solid #fcd34d; color: #b45309; font-size: 11px; padding: 6px 10px; }
+    .btn-del { background: #fef2f2; border: 1px solid #fca5a5; color: #dc2626; font-size: 11px; padding: 6px 10px; }
+
+    .matched-member-box {
+      background: #ecfdf5; border: 1px solid #6ee7b7; color: #065f46;
+      border-radius: 10px; padding: 10px 12px; margin-bottom: 10px; font-size: 13px;
     }
-    .sub-tab.active { background: var(--primary); color: #fff; border-color: var(--primary); }
-    .member-item {
-      border: 1px solid var(--border); border-radius: 12px; padding: 11px 12px; margin-bottom: 8px;
-      display: flex; justify-content: space-between; align-items: center; gap: 10px; background: #fff;
-    }
-    .member-name { font-weight: 700; font-size: 13px; text-transform: uppercase; line-height: 1.3; }
-    .member-id { font-size: 12px; color: var(--muted); margin-top: 2px; }
-    .badge {
-      display: inline-block; padding: 4px 9px; border-radius: 8px; font-size: 11px; font-weight: 700;
-      border: 1px solid var(--border); background: #f9fafb;
-    }
-    .badge-paid { background: #ecfdf5; color: var(--success); border-color: #6ee7b7; }
-    .badge-unpaid { background: #fef2f2; color: var(--danger); border-color: #fca5a5; }
-    .badge-pre { background: #f3f4f6; color: #4b5563; border-color: #d1d5db; }
-    .search-dropdown {
-      border: 1px solid var(--primary); border-radius: 10px; background: #fff;
-      max-height: 190px; overflow-y: auto; margin-top: 6px; box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-    }
-    .search-option {
-      padding: 9px 12px; border-bottom: 1px solid var(--border); cursor: pointer; font-size: 13px;
-    }
-    .search-option:last-child { border-bottom: none; }
-    .search-option:hover, .search-option:active { background: #ecfdf5; }
-    .nav-bar {
-      position: fixed; bottom: 0; left: 0; right: 0; background: #fff; border-top: 1px solid var(--border);
-      display: grid; grid-template-columns: repeat(4, 1fr); z-index: 30; padding: 6px 4px;
-    }
-    .nav-btn {
-      background: none; border: none; padding: 6px 2px; font-size: 11px; font-weight: 600;
-      color: var(--muted); display: flex; flex-direction: column; align-items: center; gap: 3px; cursor: pointer;
-    }
-    .nav-btn.active { color: var(--primary); }
-    .nav-btn span.ico { font-size: 17px; }
+
     .page { display: none; }
     .page.active { display: block; }
+
     .modal-bg {
-      display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 50;
-      align-items: center; justify-content: center; padding: 16px;
+      display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.55); z-index: 60;
+      align-items: center; justify-content: center; padding: 14px;
     }
     .modal-bg.open { display: flex; }
-    .modal-box { background: #fff; border-radius: 14px; padding: 16px; width: 100%; max-width: 420px; }
+    .modal-card {
+      background: #fff; border-radius: 16px; padding: 16px; width: 100%; max-width: 480px;
+      max-height: 82vh; overflow-y: auto;
+    }
   </style>
 </head>
 <body>
@@ -126,144 +146,161 @@
 </header>
 
 <div class="container">
-  <div class="sync-banner">
-    <span id="syncStatusText">Menyegerak senarai ahli dari Google Sheet...</span>
-    <button class="btn btn-outline" onclick="syncGoogleSheet(true)">Segerak Sheet</button>
+  <!-- 3 Tab Utama Selaras Aplikasi -->
+  <div class="top-tabs">
+    <button class="top-tab active" id="tab-ringkasan" onclick="switchMainTab('ringkasan')">1. Ringkasan</button>
+    <button class="top-tab" id="tab-transaksi" onclick="switchMainTab('transaksi')">2. Transaksi</button>
+    <button class="top-tab" id="tab-tetapan" onclick="switchMainTab('tetapan')">3. Tetapan &amp; Audit</button>
   </div>
 
-  <!-- Ringkasan Kewangan Sentiasa Dipapar -->
-  <div class="grid-2">
-    <div class="card" style="margin-bottom:0;">
-      <div class="stat-label">Akaun Bank</div>
-      <div class="stat-val" id="bankBalance">RM 0.00</div>
-    </div>
-    <div class="card" style="margin-bottom:0;">
-      <div class="stat-label">Peti Tunai</div>
-      <div class="stat-val" id="cashBalance">RM 0.00</div>
-    </div>
-  </div>
-  <div class="total-box" style="margin-top:10px;">
-    <div>
-      <div style="font-weight:700; font-size:14px;">Jumlah Wang Kelab</div>
-      <div style="font-size:11px; opacity:0.9;" id="inOutSummary">Masuk: RM 0.00 • Keluar: RM 0.00</div>
-    </div>
-    <div class="big" id="totalBalance">RM 0.00</div>
+  <div class="notice-banner" id="topNoticeBanner">
+    Kiraan yuran bulanan bermula 12/2026 (Disember 2026). Menunggu data terkini...
   </div>
 
-  <!-- TAB 1: STATUS YURAN -->
-  <div id="page-status" class="page active">
+  <!-- ================= 1. RINGKASAN ================= -->
+  <div id="page-ringkasan" class="page active">
     <div class="card">
-      <div class="section-title">Status Yuran Bulanan</div>
-      <div style="font-size:11px; color:#047857; background:#ecfdf5; padding:7px 10px; border-radius:8px; margin-bottom:10px;">
-        ℹ️ Kiraan yuran wajib bermula <strong>12/2026 (Disember 2026)</strong> pada kadar <strong>RM 10.00 / bulan</strong>.
+      <div class="section-title">1. Wang Sebenar di Bank &amp; Peti Tunai</div>
+      <div class="grid-2">
+        <div class="mini-box">
+          <div class="mini-label">Akaun Bank</div>
+          <div class="mini-val" id="bankVal">RM 0.00</div>
+        </div>
+        <div class="mini-box">
+          <div class="mini-label">Peti Tunai</div>
+          <div class="mini-val" id="cashVal">RM 0.00</div>
+        </div>
+      </div>
+      <div class="total-banner">
+        <div>
+          <div style="font-weight:800; font-size:14px;">Jumlah Wang Kelab</div>
+          <div style="font-size:11px; opacity:0.9;" id="inOutVal">Masuk: RM 0.00 • Keluar: RM 0.00</div>
+        </div>
+        <div class="big" id="totalVal">RM 0.00</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; margin-bottom:10px;">
+        <div class="section-title" style="margin:0;">2. Status Yuran Ahli</div>
+        <button class="btn btn-outline" onclick="syncSheet(true)">Segerak Sheet</button>
       </div>
 
       <div class="grid-2">
         <div>
-          <label>Bulan Rujukan</label>
-          <select id="monthSelect" onchange="renderStatus()"></select>
+          <label>Bulan Semakan</label>
+          <select id="summaryMonthSelect" onchange="renderSummaryStatus()"></select>
         </div>
         <div>
-          <label>Cari Ahli</label>
-          <input type="text" id="statusSearchInput" placeholder="Nama / KMTWP..." oninput="renderStatus()" />
+          <label>Kadar Yuran Bulanan (RM)</label>
+          <input type="number" id="feeRateInput" step="0.01" value="10.00" onchange="updateFeeRate()" />
         </div>
       </div>
 
-      <!-- Pecahan Tab Sudah Bayar vs Belum Bayar -->
-      <div class="sub-tabs">
-        <button class="sub-tab active" id="tabFilter-all" onclick="setStatusFilter('all')">Semua (0)</button>
-        <button class="sub-tab" id="tabFilter-paid" onclick="setStatusFilter('paid')">Sudah Bayar (0)</button>
-        <button class="sub-tab" id="tabFilter-unpaid" onclick="setStatusFilter('unpaid')">Belum Bayar (0)</button>
+      <div style="font-size:12px; color:var(--muted); margin-bottom:10px;" id="sheetMetaText">
+        Jumlah peserta: 0 • Segerak: -
       </div>
 
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; font-size:12px; color:var(--muted);">
-        <span id="memberCountInfo">Jumlah peserta: 0</span>
-        <button class="btn btn-email" id="bulkEmailBtn" onclick="sendBulkEmailNotice()" style="display:none;">✉️ Notis E-mel Pukal</button>
+      <!-- PARTISAN 1: SUDAH BAYAR -->
+      <div class="partition-box">
+        <div class="partition-header">
+          <div class="partition-title" style="color:#065f46;" id="paidSummaryHeadline">0/0 sudah buat bayaran bulan semasa</div>
+          <button class="btn btn-list" onclick="openFullListModal('paid')">Senarai Penuh Bayar</button>
+        </div>
+        <div id="paidPreviewList"></div>
       </div>
 
-      <div id="memberStatusList"></div>
+      <!-- PARTISAN 2: BELUM BAYAR -->
+      <div class="partition-box" style="margin-bottom:0;">
+        <div class="partition-header">
+          <div class="partition-title" style="color:#991b1b;" id="unpaidSummaryHeadline">0 belum buat bayaran bulan semasa</div>
+          <button class="btn btn-list-unpaid" onclick="openFullListModal('unpaid')">Senarai Penuh Belum</button>
+        </div>
+        <div id="unpaidPreviewList"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="section-title">3. Bukti &amp; Rujukan Juruaudit</div>
+      <div id="auditSummaryList" style="font-size:13px; color:var(--muted);">Belum ada transaksi direkodkan.</div>
     </div>
   </div>
 
-  <!-- TAB 2: TERIMA BAYARAN YURAN -->
-  <div id="page-bayar" class="page">
+  <!-- ================= 2. TRANSAKSI ================= -->
+  <div id="page-transaksi" class="page">
     <div class="card">
       <div class="section-title">Terima Bayaran Yuran (Jana Resit)</div>
 
-      <!-- Butang & Kotak Carian Pantas Nama Ahli -->
-      <div style="margin-bottom:12px;">
-        <label>Carian Pantas Nama Ahli (Klik untuk pilih)</label>
-        <div style="display:flex; gap:6px;">
-          <input type="text" id="payMemberSearch" placeholder="Taip nama atau no. ahli KMTWP..." oninput="filterPayMembers()" onfocus="filterPayMembers()" />
-          <button type="button" class="btn btn-outline" onclick="togglePaySearchList()">🔍 Cari</button>
-        </div>
-        <div id="paySearchResults" class="search-dropdown" style="display:none;"></div>
+      <div style="margin-bottom:10px;">
+        <label>Nombor Ahli (Contoh: 0001 atau KMTWP/2026/0001)</label>
+        <input
+          type="text"
+          id="memberNumberInput"
+          placeholder="Masukkan no. ahli untuk cari nama automatik..."
+          oninput="autoFillMemberByNumber()"
+        />
       </div>
 
-      <div style="margin-bottom:10px;">
-        <label>Ahli Kelab Dipilih</label>
-        <select id="payMemberSelect"></select>
+      <div class="matched-member-box" id="matchedMemberBox">
+        Nama Ahli: <strong>Belum dijumpai</strong> — Masukkan nombor ahli di atas.
       </div>
 
       <div class="grid-2">
         <div>
           <label>Untuk Bulan Yuran</label>
-          <select id="payForMonth"></select>
+          <select id="payMonthSelect"></select>
         </div>
         <div>
           <label>Amaun (RM)</label>
-          <input type="number" id="payAmount" step="0.01" value="10.00" />
+          <input type="number" id="payAmountInput" step="0.01" value="10.00" />
         </div>
       </div>
 
       <div class="grid-2">
         <div>
           <label>Akaun Terima</label>
-          <select id="payAccount">
+          <select id="payAccountSelect">
             <option value="Akaun Bank">Akaun Bank</option>
             <option value="Peti Tunai">Peti Tunai</option>
           </select>
         </div>
         <div>
           <label>Tarikh Urus Niaga</label>
-          <input type="date" id="payDate" />
+          <input type="date" id="payDateInput" />
         </div>
       </div>
 
-      <button class="btn btn-primary" style="margin-top:8px;" onclick="recordFeePayment()">Keluarkan Resit Rasmi</button>
+      <button class="btn btn-primary" onclick="submitFeePayment()">Keluarkan Resit Rasmi</button>
     </div>
-  </div>
 
-  <!-- TAB 3: REKOD PERBELANJAAN -->
-  <div id="page-belanja" class="page">
     <div class="card">
-      <div class="section-title">Rekod Perbelanjaan (Baucar)</div>
+      <div class="section-title">Rekod Perbelanjaan (Jana Baucar &amp; Bukti)</div>
       <div style="margin-bottom:10px;">
         <label>Kategori</label>
-        <select id="expCategory">
+        <select id="expCategorySelect">
           <option value="Belian Sasaran">Belian Sasaran</option>
           <option value="Peralatan Memanah">Peralatan Memanah</option>
           <option value="Penyelenggaraan Lapang Sasar">Penyelenggaraan Lapang Sasar</option>
-          <option value="Pertandingan & Aktiviti">Pertandingan & Aktiviti</option>
-          <option value="Pentadbiran & Lain-lain">Pentadbiran & Lain-lain</option>
+          <option value="Pertandingan &amp; Aktiviti">Pertandingan &amp; Aktiviti</option>
+          <option value="Pentadbiran &amp; Lain-lain">Pentadbiran &amp; Lain-lain</option>
         </select>
       </div>
       <div style="margin-bottom:10px;">
-        <label>Penerima / Pembekal</label>
-        <input type="text" id="expPayee" placeholder="Nama pembekal / penerima" />
+        <label>Penerima</label>
+        <input type="text" id="expPayeeInput" placeholder="Nama pembekal / penerima" />
       </div>
       <div style="margin-bottom:10px;">
         <label>Tujuan</label>
-        <input type="text" id="expPurpose" placeholder="Contoh: Belian muka sasaran" />
+        <input type="text" id="expPurposeInput" placeholder="Contoh: Belian muka sasaran" />
       </div>
       <div class="grid-2">
         <div>
           <label>Amaun (RM)</label>
-          <input type="number" id="expAmount" step="0.01" placeholder="30.00" />
+          <input type="number" id="expAmountInput" step="0.01" placeholder="30.00" />
         </div>
         <div>
           <label>Akaun Bayar</label>
-          <select id="expAccount">
+          <select id="expAccountSelect">
             <option value="Akaun Bank">Akaun Bank</option>
             <option value="Peti Tunai">Peti Tunai</option>
           </select>
@@ -271,31 +308,43 @@
       </div>
       <div style="margin-bottom:10px;">
         <label>Tarikh</label>
-        <input type="date" id="expDate" />
+        <input type="date" id="expDateInput" />
       </div>
-      <button class="btn btn-primary" onclick="recordExpense()">Simpan Rekod Perbelanjaan</button>
+      <button class="btn btn-primary" onclick="submitExpense()">Simpan Rekod Perbelanjaan</button>
     </div>
   </div>
 
-  <!-- TAB 4: PEMBETULAN KEWANGAN & JURUAUDIT -->
-  <div id="page-pembetulan" class="page">
+  <!-- ================= 3. TETAPAN & AUDIT (PEMBETULAN KEWANGAN) ================= -->
+  <div id="page-tetapan" class="page">
     <div class="card">
-      <div class="section-title">Pembetulan Kewangan & Rekod Transaksi</div>
+      <div class="section-title">Pembetulan Kewangan &amp; Rekod Transaksi</div>
       <p style="font-size:12px; color:var(--muted); margin-top:0;">
-        Gunakan ruangan ini untuk <strong>mengedit</strong> atau <strong>memadam</strong> transaksi sekiranya tersalah key-in data pembayaran atau perbelanjaan.
+        Sunting atau padam rekod sekiranya berlaku kesilapan kemasukan data pembayaran atau perbelanjaan. Baki &amp; status yuran akan dikemas kini serta-merta.
       </p>
-      <div id="transactionCorrectionList"></div>
+      <div id="correctionListBox"></div>
     </div>
   </div>
 </div>
 
-<!-- Modal Edit Transaksi -->
-<div class="modal-bg" id="editModal">
-  <div class="modal-box">
-    <div class="section-title">Edit Rekod Kewangan</div>
+<!-- MODAL SENARAI PENUH AHLI (SUDAH BAYAR / BELUM BAYAR) -->
+<div class="modal-bg" id="fullListModal">
+  <div class="modal-card">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+      <div class="section-title" style="margin:0;" id="fullListTitle">Senarai Penuh</div>
+      <button class="btn btn-outline" onclick="closeFullListModal()">Tutup</button>
+    </div>
+    <input type="text" id="modalSearchInput" placeholder="Cari nama atau no. ahli..." oninput="renderFullListModal()" style="margin-bottom:10px;" />
+    <div id="fullListBody"></div>
+  </div>
+</div>
+
+<!-- MODAL EDIT TRANSAKSI -->
+<div class="modal-bg" id="editTxModal">
+  <div class="modal-card">
+    <div class="section-title">Pembetulan Data Transaksi</div>
     <input type="hidden" id="editTxId" />
     <div style="margin-bottom:10px;">
-      <label>Butiran / Keterangan</label>
+      <label>Keterangan</label>
       <input type="text" id="editTxDesc" />
     </div>
     <div class="grid-2">
@@ -311,43 +360,30 @@
         </select>
       </div>
     </div>
-    <div class="grid-2" style="margin-top:8px;">
+    <div class="grid-2">
       <div>
         <label>Tarikh</label>
         <input type="date" id="editTxDate" />
       </div>
-      <div id="editMonthWrap">
+      <div id="editTxMonthWrap">
         <label>Bulan Yuran</label>
         <select id="editTxMonth"></select>
       </div>
     </div>
-    <div style="display:flex; gap:8px; margin-top:14px;">
-      <button class="btn btn-outline" style="flex:1;" onclick="closeEditModal()">Batal</button>
-      <button class="btn btn-primary" style="flex:1;" onclick="saveEditedTransaction()">Simpan Pembetulan</button>
+    <div style="display:flex; gap:8px; margin-top:12px;">
+      <button class="btn btn-outline" style="flex:1;" onclick="closeEditTxModal()">Batal</button>
+      <button class="btn btn-primary" style="flex:1;" onclick="saveTxCorrection()">Simpan Pembetulan</button>
     </div>
   </div>
 </div>
 
-<!-- Navigasi Bawah -->
-<nav class="nav-bar">
-  <button class="nav-btn active" id="nav-status" onclick="switchPage('status')"><span class="ico">📋</span>Status Yuran</button>
-  <button class="nav-btn" id="nav-bayar" onclick="switchPage('bayar')"><span class="ico">💳</span>Bayar Yuran</button>
-  <button class="nav-btn" id="nav-belanja" onclick="switchPage('belanja')"><span class="ico">🧾</span>Perbelanjaan</button>
-  <button class="nav-btn" id="nav-pembetulan" onclick="switchPage('pembetulan')"><span class="ico">🛠️</span>Pembetulan</button>
-</nav>
-
 <script>
-  const SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ-RK3Xy6UDixtvV5ys_HkyGm9uVKidkOtDIXTYH8tjKmCW1eZDvr8CHnvsY60gYhxZTc6t10rJodR4/pub?gid=512720693&single=true&output=csv";
-  const START_BILLING_YM = "2026-12"; // Pembayaran yuran dikira bermula Disember 2026
-  const MONTHLY_FEE = 10.00;
+  const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ-RK3Xy6UDixtvV5ys_HkyGm9uVKidkOtDIXTYH8tjKmCW1eZDvr8CHnvsY60gYhxZTc6t10rJodR4/pub?gid=512720693&single=true&output=csv";
+  const START_YM = "2026-12"; // Mula kiraan yuran: Disember 2026
 
-  let members = JSON.parse(localStorage.getItem("kmt_members") || "[]");
-  let transactions = JSON.parse(localStorage.getItem("kmt_transactions") || "[]");
-  let currentStatusFilter = "all";
-
-  const MONTHS_LIST = [
-    { ym: "2026-11", label: "11/2026 (Nov - Sebelum Kiraan)" },
-    { ym: "2026-12", label: "12/2026 (Dis - Mula Yuran)" },
+  const MONTHS = [
+    { ym: "2026-11", label: "11/2026 (Nov)" },
+    { ym: "2026-12", label: "12/2026 (Dis - Mula)" },
     { ym: "2027-01", label: "01/2027 (Jan)" },
     { ym: "2027-02", label: "02/2027 (Feb)" },
     { ym: "2027-03", label: "03/2027 (Mac)" },
@@ -362,300 +398,321 @@
     { ym: "2027-12", label: "12/2027 (Dis)" }
   ];
 
-  function initMonths() {
-    const selects = ["monthSelect", "payForMonth", "editTxMonth"];
-    selects.forEach(id => {
-      const el = document.getElementById(id);
-      if (!el) return;
-      el.innerHTML = MONTHS_LIST.map(m => `<option value="${m.ym}">${m.label}</option>`).join("");
+  let members = JSON.parse(localStorage.getItem("kmt_members_v2") || "[]");
+  let transactions = JSON.parse(localStorage.getItem("kmt_tx_v2") || "[]");
+  let monthlyFee = parseFloat(localStorage.getItem("kmt_fee_v2") || "10.00");
+  let matchedMember = null;
+  let currentModalType = "paid";
+  let lastSyncTime = "-";
+
+  function initUI() {
+    document.getElementById("feeRateInput").value = monthlyFee.toFixed(2);
+    document.getElementById("payAmountInput").value = monthlyFee.toFixed(2);
+
+    ["summaryMonthSelect", "payMonthSelect", "editTxMonth"].forEach(id => {
+      const sel = document.getElementById(id);
+      sel.innerHTML = MONTHS.map(m => `<option value="${m.ym}">${m.label}</option>`).join("");
     });
+
     const now = new Date();
     const curYm = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
-    const defaultYm = MONTHS_LIST.some(m => m.ym === curYm) ? curYm : "2026-12";
-    document.getElementById("monthSelect").value = defaultYm;
-    document.getElementById("payForMonth").value = curYm < START_BILLING_YM ? START_BILLING_YM : defaultYm;
+    const validSummaryYm = MONTHS.some(m => m.ym === curYm) ? curYm : "2026-12";
+    document.getElementById("summaryMonthSelect").value = validSummaryYm;
+    document.getElementById("payMonthSelect").value = curYm < START_YM ? START_YM : validSummaryYm;
 
-    const todayStr = now.toISOString().split("T")[0];
-    document.getElementById("payDate").value = todayStr;
-    document.getElementById("expDate").value = todayStr;
+    const today = now.toISOString().split("T")[0];
+    document.getElementById("payDateInput").value = today;
+    document.getElementById("expDateInput").value = today;
+  }
+
+  function updateFeeRate() {
+    const val = parseFloat(document.getElementById("feeRateInput").value);
+    if (!isNaN(val) && val > 0) {
+      monthlyFee = val;
+      localStorage.setItem("kmt_fee_v2", String(monthlyFee));
+      document.getElementById("payAmountInput").value = monthlyFee.toFixed(2);
+      renderSummaryStatus();
+    }
   }
 
   function parseCSV(text) {
     const rows = [];
-    let cur = "", inQuotes = false, row = [];
+    let cur = "", q = false, row = [];
     for (let i = 0; i < text.length; i++) {
-      const c = text[i], next = text[i + 1];
-      if (c === '"' && inQuotes && next === '"') { cur += '"'; i++; }
-      else if (c === '"') { inQuotes = !inQuotes; }
-      else if (c === "," && !inQuotes) { row.push(cur.trim()); cur = ""; }
-      else if ((c === "\n" || c === "\r") && !inQuotes) {
-        if (cur.length > 0 || row.length > 0) { row.push(cur.trim()); rows.push(row); }
+      const c = text[i], n = text[i + 1];
+      if (c === '"' && q && n === '"') { cur += '"'; i++; }
+      else if (c === '"') { q = !q; }
+      else if (c === "," && !q) { row.push(cur.trim()); cur = ""; }
+      else if ((c === "\n" || c === "\r") && !q) {
+        if (cur.length || row.length) { row.push(cur.trim()); rows.push(row); }
         cur = ""; row = [];
-        if (c === "\r" && next === "\n") i++;
-      } else { cur += c; }
+        if (c === "\r" && n === "\n") i++;
+      } else cur += c;
     }
-    if (cur.length > 0 || row.length > 0) { row.push(cur.trim()); rows.push(row); }
+    if (cur.length || row.length) { row.push(cur.trim()); rows.push(row); }
     return rows;
   }
 
-  async function syncGoogleSheet(manual = false) {
-    const statusEl = document.getElementById("syncStatusText");
-    if (manual) statusEl.textContent = "Menyegerak data terkini...";
+  async function syncSheet(showAlert = false) {
     try {
-      const res = await fetch(SHEET_CSV_URL + "&t=" + Date.now());
-      const csvText = await res.text();
-      const rows = parseCSV(csvText);
+      const res = await fetch(CSV_URL + "&t=" + Date.now());
+      const txt = await res.text();
+      const rows = parseCSV(txt);
       if (rows.length > 1) {
         const headers = rows[0].map(h => h.toLowerCase());
         const nameIdx = headers.findIndex(h => h.includes("nama"));
         const idIdx = headers.findIndex(h => h.includes("kmtwp") || h.includes("no ahli") || h.includes("no. ahli") || h.includes("id"));
         const emailIdx = headers.findIndex(h => h.includes("email") || h.includes("emel") || h.includes("e-mel"));
 
-        const parsed = [];
-        let autoCounter = 1;
+        const list = [];
+        let seq = 1;
         for (let i = 1; i < rows.length; i++) {
           const r = rows[i];
-          const rawName = (nameIdx >= 0 ? r[nameIdx] : r[1] || r[0] || "").trim();
-          if (!rawName) continue;
-          let rawId = (idIdx >= 0 ? r[idIdx] : "").trim();
-          if (!rawId) {
-            rawId = `KMTWP/2026/${String(autoCounter).padStart(4, "0")}`;
-          }
-          autoCounter++;
-          const rawEmail = (emailIdx >= 0 ? r[emailIdx] : "").trim();
-          parsed.push({ id: rawId, name: rawName, email: rawEmail });
+          const name = (nameIdx >= 0 ? r[nameIdx] : r[1] || r[0] || "").trim();
+          if (!name) continue;
+          let id = (idIdx >= 0 ? r[idIdx] : "").trim();
+          if (!id) id = `KMTWP/2026/${String(seq).padStart(4, "0")}`;
+          seq++;
+          const email = (emailIdx >= 0 ? r[emailIdx] : "").trim();
+          list.push({ id, name, email });
         }
-        if (parsed.length > 0) {
-          members = parsed;
-          localStorage.setItem("kmt_members", JSON.stringify(members));
+        if (list.length > 0) {
+          members = list;
+          localStorage.setItem("kmt_members_v2", JSON.stringify(members));
         }
       }
-      const timeNow = new Date().toLocaleTimeString("ms-MY");
-      statusEl.textContent = `Senarai ahli dikemas kini (${members.length} peserta) pada ${timeNow}.`;
-      populateMemberSelect();
-      renderAll();
-    } catch (err) {
-      statusEl.textContent = `Mod luar talian (${members.length} peserta disimpan).`;
-      populateMemberSelect();
-      renderAll();
+      lastSyncTime = new Date().toLocaleTimeString("ms-MY");
+      if (showAlert) alert(`Senarai ahli dikemas kini (${members.length} ahli).`);
+    } catch (e) {
+      lastSyncTime = "Luar talian";
     }
+    renderAll();
   }
 
-  function populateMemberSelect() {
-    const sel = document.getElementById("payMemberSelect");
-    sel.innerHTML = members.map(m => `<option value="${m.id}">${m.id} - ${m.name}</option>`).join("");
-  }
-
-  function filterPayMembers() {
-    const q = document.getElementById("payMemberSearch").value.trim().toLowerCase();
-    const box = document.getElementById("paySearchResults");
-    const filtered = members.filter(m => m.name.toLowerCase().includes(q) || m.id.toLowerCase().includes(q));
-    if (filtered.length === 0) {
-      box.innerHTML = `<div class="search-option" style="color:var(--muted);">Tiada ahli dijumpai.</div>`;
-    } else {
-      box.innerHTML = filtered.map(m => `
-        <div class="search-option" onclick="selectMemberForPayment('${m.id}')">
-          <strong>${m.name}</strong><br/>
-          <span style="font-size:11px; color:var(--muted);">${m.id}</span>
-        </div>
-      `).join("");
-    }
-    box.style.display = "block";
-  }
-
-  function togglePaySearchList() {
-    const box = document.getElementById("paySearchResults");
-    if (box.style.display === "block") { box.style.display = "none"; }
-    else { filterPayMembers(); }
-  }
-
-  function selectMemberForPayment(memberId) {
-    document.getElementById("payMemberSelect").value = memberId;
-    const m = members.find(x => x.id === memberId);
-    if (m) document.getElementById("payMemberSearch").value = `${m.id} - ${m.name}`;
-    document.getElementById("paySearchResults").style.display = "none";
-  }
-
-  function setStatusFilter(filter) {
-    currentStatusFilter = filter;
-    ["all", "paid", "unpaid"].forEach(f => {
-      document.getElementById(`tabFilter-${f}`).classList.toggle("active", f === filter);
-    });
-    renderStatus();
-  }
-
-  function getMemberMonthPaid(memberId, ym) {
+  function getPaidAmountForMonth(memberId, ym) {
     return transactions
       .filter(t => t.type === "IN" && t.memberId === memberId && t.forMonth === ym)
       .reduce((sum, t) => sum + Number(t.amount || 0), 0);
   }
 
-  function renderStatus() {
-    const ym = document.getElementById("monthSelect").value;
-    const q = document.getElementById("statusSearchInput").value.trim().toLowerCase();
-    const isBillingActive = ym >= START_BILLING_YM;
+  function evaluateMonthMembers(ym) {
+    const activeBilling = ym >= START_YM;
+    const paidList = [];
+    const unpaidList = [];
 
-    let paidCount = 0;
-    let unpaidCount = 0;
-
-    const evaluated = members.map(m => {
-      const paid = getMemberMonthPaid(m.id, ym);
-      const isPaid = paid >= MONTHLY_FEE;
-      if (isPaid) paidCount++;
-      else if (isBillingActive) unpaidCount++;
-      return { ...m, paid, isPaid };
+    members.forEach(m => {
+      const paidAmt = getPaidAmountForMonth(m.id, ym);
+      const isPaid = activeBilling && paidAmt >= monthlyFee;
+      const item = { ...m, paidAmt, dueAmt: Math.max(0, monthlyFee - paidAmt), activeBilling };
+      if (isPaid) paidList.push(item);
+      else unpaidList.push(item);
     });
 
-    document.getElementById("tabFilter-all").textContent = `Semua (${members.length})`;
-    document.getElementById("tabFilter-paid").textContent = `Sudah Bayar (${paidCount})`;
-    document.getElementById("tabFilter-unpaid").textContent = `Belum Bayar (${unpaidCount})`;
-    document.getElementById("memberCountInfo").textContent = `Jumlah peserta: ${members.length}`;
+    return { activeBilling, paidList, unpaidList };
+  }
 
-    const bulkBtn = document.getElementById("bulkEmailBtn");
-    bulkBtn.style.display = (isBillingActive && unpaidCount > 0) ? "inline-flex" : "none";
+  function renderSummaryStatus() {
+    const ym = document.getElementById("summaryMonthSelect").value;
+    const totalMembers = members.length;
+    const { activeBilling, paidList, unpaidList } = evaluateMonthMembers(ym);
 
-    const listEl = document.getElementById("memberStatusList");
-    const visible = evaluated.filter(m => {
-      const matchQuery = !q || m.name.toLowerCase().includes(q) || m.id.toLowerCase().includes(q);
-      if (!matchQuery) return false;
-      if (currentStatusFilter === "paid") return m.isPaid;
-      if (currentStatusFilter === "unpaid") return isBillingActive && !m.isPaid;
-      return true;
-    });
+    const banner = document.getElementById("topNoticeBanner");
+    if (!activeBilling) {
+      banner.textContent = `Bulan ${ym} adalah sebelum mula kiraan yuran (mula 12/2026). Tiada tunggakan dikira.`;
+    } else {
+      banner.textContent = `Kiraan yuran aktif bermula 12/2026 (RM ${monthlyFee.toFixed(2)}/bulan). ${paidList.length}/${totalMembers} sudah buat bayaran bulan semasa.`;
+    }
 
-    if (visible.length === 0) {
-      listEl.innerHTML = `<div style="text-align:center; padding:16px; color:var(--muted); font-size:13px;">Tiada rekod peserta dalam kategori ini.</div>`;
+    document.getElementById("sheetMetaText").textContent = `Jumlah peserta: ${totalMembers} • Segerak: ${lastSyncTime}`;
+    document.getElementById("paidSummaryHeadline").textContent = `${paidList.length}/${totalMembers} sudah buat bayaran bulan semasa`;
+    document.getElementById("unpaidSummaryHeadline").textContent = activeBilling
+      ? `${unpaidList.length}/${totalMembers} belum buat bayaran bulan semasa`
+      : `0/${totalMembers} belum bayaran aktif (mula 12/2026)`;
+
+    // Paparan ringkas sedikit nama sahaja di muka depan (maksimum 2 nama)
+    const paidPreview = document.getElementById("paidPreviewList");
+    if (paidList.length === 0) {
+      paidPreview.innerHTML = `<div style="font-size:12px; color:var(--muted);">Belum ada ahli yang membayar bagi bulan ini.</div>`;
+    } else {
+      paidPreview.innerHTML = paidList.slice(0, 2).map(m => `
+        <div class="member-row">
+          <div>
+            <div class="m-name">${m.name}</div>
+            <div class="m-id">${m.id}</div>
+          </div>
+          <span style="font-size:11px; font-weight:700; color:var(--success);">✓ RM ${m.paidAmt.toFixed(2)}</span>
+        </div>
+      `).join("");
+    }
+
+    const unpaidPreview = document.getElementById("unpaidPreviewList");
+    if (!activeBilling) {
+      unpaidPreview.innerHTML = `<div style="font-size:12px; color:var(--muted);">Kiraan yuran bermula 12/2026.</div>`;
+    } else if (unpaidList.length === 0) {
+      unpaidPreview.innerHTML = `<div style="font-size:12px; color:var(--success); font-weight:700;">Semua ahli sudah menjelaskan yuran bulan ini!</div>`;
+    } else {
+      unpaidPreview.innerHTML = unpaidList.slice(0, 2).map(m => `
+        <div class="member-row">
+          <div>
+            <div class="m-name">${m.name}</div>
+            <div class="m-id">${m.id}</div>
+          </div>
+          <button class="btn btn-email" onclick="sendEmailNotice('${m.id}', '${ym}')">Notis E-mel</button>
+        </div>
+      `).join("");
+    }
+  }
+
+  function openFullListModal(type) {
+    currentModalType = type;
+    document.getElementById("modalSearchInput").value = "";
+    document.getElementById("fullListTitle").textContent =
+      type === "paid" ? "Senarai Penuh: Sudah Bayar" : "Senarai Penuh: Belum Bayar";
+    renderFullListModal();
+    document.getElementById("fullListModal").classList.add("open");
+  }
+
+  function closeFullListModal() {
+    document.getElementById("fullListModal").classList.remove("open");
+  }
+
+  function renderFullListModal() {
+    const ym = document.getElementById("summaryMonthSelect").value;
+    const q = document.getElementById("modalSearchInput").value.trim().toLowerCase();
+    const { activeBilling, paidList, unpaidList } = evaluateMonthMembers(ym);
+    const source = currentModalType === "paid" ? paidList : (activeBilling ? unpaidList : []);
+    const filtered = source.filter(m => m.name.toLowerCase().includes(q) || m.id.toLowerCase().includes(q));
+
+    const body = document.getElementById("fullListBody");
+    if (filtered.length === 0) {
+      body.innerHTML = `<div style="font-size:13px; color:var(--muted); padding:10px 0;">Tiada ahli dalam senarai ini.</div>`;
       return;
     }
 
-    listEl.innerHTML = visible.map(m => {
-      let rightHtml = "";
-      if (m.isPaid) {
-        rightHtml = `
-          <div style="text-align:right;">
-            <span class="badge badge-paid">✓ Sudah Bayar</span>
-            <div style="font-size:11px; color:var(--success); margin-top:3px;">RM ${m.paid.toFixed(2)}</div>
-          </div>`;
-      } else if (!isBillingActive) {
-        rightHtml = `
-          <div style="text-align:right;">
-            <span class="badge badge-pre">- Belum Bermula</span>
-            <div style="font-size:10px; color:var(--muted); margin-top:3px;">Mula 12/2026</div>
-          </div>`;
-      } else {
-        const due = Math.max(0, MONTHLY_FEE - m.paid);
-        rightHtml = `
-          <div style="text-align:right; display:flex; flex-direction:column; align-items:flex-end; gap:4px;">
-            <span class="badge badge-unpaid">! Belum Bayar</span>
-            <div style="font-size:11px; color:var(--danger);">Baki: RM ${due.toFixed(2)}</div>
-            <button class="btn btn-email" onclick="sendSingleEmailNotice('${m.id}', '${ym}')">✉️ Notis E-mel</button>
-          </div>`;
-      }
-      return `
-        <div class="member-item">
-          <div>
-            <div class="member-name">${m.name}</div>
-            <div class="member-id">${m.id}${m.email ? " • " + m.email : ""}</div>
-          </div>
-          ${rightHtml}
-        </div>`;
-    }).join("");
+    body.innerHTML = filtered.map(m => `
+      <div class="member-row">
+        <div>
+          <div class="m-name">${m.name}</div>
+          <div class="m-id">${m.id}${m.email ? " • " + m.email : ""}</div>
+        </div>
+        ${currentModalType === "paid"
+          ? `<span style="font-size:12px; font-weight:700; color:var(--success);">✓ RM ${m.paidAmt.toFixed(2)}</span>`
+          : `<button class="btn btn-email" onclick="sendEmailNotice('${m.id}', '${ym}')">Notis E-mel</button>`
+        }
+      </div>
+    `).join("");
   }
 
-  function sendSingleEmailNotice(memberId, ym) {
+  function sendEmailNotice(memberId, ym) {
     const m = members.find(x => x.id === memberId);
     if (!m) return;
-    const monthObj = MONTHS_LIST.find(x => x.ym === ym);
+    const monthObj = MONTHS.find(x => x.ym === ym);
     const monthLabel = monthObj ? monthObj.label : ym;
-    const subject = encodeURIComponent(`Notis Peringatan Yuran Bulanan KMT MSAS (${monthLabel})`);
+    const subject = encodeURIComponent(`Notis Pembayaran Yuran Bulanan KMT MSAS (${monthLabel})`);
     const body = encodeURIComponent(
       `Assalamualaikum & Salam Sejahtera ${m.name} (${m.id}),\n\n` +
-      `Ini adalah notis peringatan mesra berhubung pembayaran yuran bulanan Kelab Memanah Tradisional Warisan Perdana Sg Isap bagi bulan ${monthLabel} berjumlah RM ${MONTHLY_FEE.toFixed(2)}.\n\n` +
-      `Mohon kerjasama tuan/puan untuk menjelaskan bayaran tersebut kepada Bendahari Kelab. Jika bayaran telah dibuat, sila abaikan notis ini.\n\n` +
-      `Terima kasih.\nBendahari KMT MSAS`
+      `Peringatan mesra mengenai pembayaran yuran bulanan Kelab Memanah Tradisional Warisan Perdana Sg Isap bagi bulan ${monthLabel} berjumlah RM ${monthlyFee.toFixed(2)}.\n\n` +
+      `Mohon tindakan pembayaran kepada Bendahari Kelab. Terima kasih.\nBendahari KMT MSAS`
     );
-    const to = m.email || "";
-    window.location.href = `mailto:${to}?subject=${subject}&body=${body}`;
+    window.location.href = `mailto:${m.email || ""}?subject=${subject}&body=${body}`;
   }
 
-  function sendBulkEmailNotice() {
-    const ym = document.getElementById("monthSelect").value;
-    const unpaidWithEmail = members.filter(m => getMemberMonthPaid(m.id, ym) < MONTHLY_FEE && m.email);
-    const monthObj = MONTHS_LIST.find(x => x.ym === ym);
-    const monthLabel = monthObj ? monthObj.label : ym;
-    if (unpaidWithEmail.length === 0) {
-      alert("Tiada alamat e-mel ahli belum bayar ditemui dalam Google Sheet. Pastikan lajur E-mel diisi dalam Google Sheet.");
+  // Cari dan isi nama ahli secara automatik apabila nombor ahli dimasukkan
+  function autoFillMemberByNumber() {
+    const raw = document.getElementById("memberNumberInput").value.trim().toLowerCase();
+    const box = document.getElementById("matchedMemberBox");
+    if (!raw) {
+      matchedMember = null;
+      box.innerHTML = `Nama Ahli: <strong>Belum dijumpai</strong> — Masukkan nombor ahli di atas.`;
       return;
     }
-    const bcc = unpaidWithEmail.map(m => m.email).join(",");
-    const subject = encodeURIComponent(`Notis Peringatan Yuran Bulanan KMT MSAS (${monthLabel})`);
-    const body = encodeURIComponent(
-      `Assalamualaikum & Salam Sejahtera Ahli KMT MSAS,\n\n` +
-      `Ini adalah notis peringatan pembayaran yuran bulanan kelab bagi bulan ${monthLabel} berjumlah RM ${MONTHLY_FEE.toFixed(2)}.\n\n` +
-      `Terima kasih.\nBendahari KMT MSAS`
-    );
-    window.location.href = `mailto:?bcc=${bcc}&subject=${subject}&body=${body}`;
+
+    const found = members.find(m => {
+      const fullId = m.id.toLowerCase();
+      const tailDigits = fullId.split("/").pop() || "";
+      return fullId === raw || fullId.endsWith(raw) || tailDigits === raw || tailDigits.replace(/^0+/, "") === raw.replace(/^0+/, "");
+    });
+
+    if (found) {
+      matchedMember = found;
+      box.innerHTML = `Nama Ahli: <strong>${found.name}</strong> <span style="font-size:11px;">(${found.id})</span>`;
+    } else {
+      matchedMember = null;
+      box.innerHTML = `Nama Ahli: <span style="color:var(--danger); font-weight:700;">Tiada nombor ahli sepadan</span>`;
+    }
   }
 
-  function recordFeePayment() {
-    const memberId = document.getElementById("payMemberSelect").value;
-    const forMonth = document.getElementById("payForMonth").value;
-    const amount = parseFloat(document.getElementById("payAmount").value);
-    const account = document.getElementById("payAccount").value;
-    const date = document.getElementById("payDate").value;
-
-    if (!memberId || isNaN(amount) || amount <= 0) {
-      alert("Sila pilih ahli dan masukkan amaun yang sah.");
+  function submitFeePayment() {
+    if (!matchedMember) {
+      autoFillMemberByNumber();
+    }
+    if (!matchedMember) {
+      alert("Sila masukkan nombor ahli yang sah supaya nama ahli dapat dikesan.");
       return;
     }
-    const m = members.find(x => x.id === memberId);
+    const forMonth = document.getElementById("payMonthSelect").value;
+    const amount = parseFloat(document.getElementById("payAmountInput").value);
+    const account = document.getElementById("payAccountSelect").value;
+    const date = document.getElementById("payDateInput").value;
+
+    if (isNaN(amount) || amount <= 0) {
+      alert("Sila masukkan amaun bayaran yang sah.");
+      return;
+    }
+
     const tx = {
       id: "TX-" + Date.now(),
       type: "IN",
-      memberId,
-      memberName: m ? m.name : memberId,
-      desc: `Yuran (${forMonth}) - ${m ? m.name : memberId}`,
+      memberId: matchedMember.id,
+      memberName: matchedMember.name,
       forMonth,
+      desc: `Yuran (${forMonth}) - ${matchedMember.name} [${matchedMember.id}]`,
       amount,
       account,
       date
     };
+
     transactions.unshift(tx);
-    saveTransactions();
-    alert(`Resit rasmi untuk ${tx.memberName} (RM ${amount.toFixed(2)}) berjaya direkodkan!`);
-    switchPage("status");
+    saveTxAndRefresh();
+
+    // Selaraskan bulan semakan pada muka depan supaya terus nampak kemas kini
+    document.getElementById("summaryMonthSelect").value = forMonth;
+    document.getElementById("memberNumberInput").value = "";
+    autoFillMemberByNumber();
+    switchMainTab("ringkasan");
+    alert(`Bayaran RM ${amount.toFixed(2)} untuk ${tx.memberName} direkodkan & muka depan dikemas kini.`);
   }
 
-  function recordExpense() {
-    const category = document.getElementById("expCategory").value;
-    const payee = document.getElementById("expPayee").value.trim();
-    const purpose = document.getElementById("expPurpose").value.trim();
-    const amount = parseFloat(document.getElementById("expAmount").value);
-    const account = document.getElementById("expAccount").value;
-    const date = document.getElementById("expDate").value;
+  function submitExpense() {
+    const cat = document.getElementById("expCategorySelect").value;
+    const payee = document.getElementById("expPayeeInput").value.trim();
+    const purpose = document.getElementById("expPurposeInput").value.trim();
+    const amount = parseFloat(document.getElementById("expAmountInput").value);
+    const account = document.getElementById("expAccountSelect").value;
+    const date = document.getElementById("expDateInput").value;
 
     if (!payee || isNaN(amount) || amount <= 0) {
-      alert("Sila masukkan nama penerima dan amaun perbelanjaan yang sah.");
+      alert("Sila isi nama penerima dan amaun perbelanjaan.");
       return;
     }
-    const tx = {
+
+    transactions.unshift({
       id: "TX-" + Date.now(),
       type: "OUT",
-      desc: `${category}: ${payee}${purpose ? " (" + purpose + ")" : ""}`,
+      desc: `${cat}: ${payee}${purpose ? " - " + purpose : ""}`,
       amount,
       account,
       date
-    };
-    transactions.unshift(tx);
-    saveTransactions();
-    document.getElementById("expPayee").value = "";
-    document.getElementById("expPurpose").value = "";
-    document.getElementById("expAmount").value = "";
-    alert("Rekod perbelanjaan berjaya disimpan!");
-    switchPage("pembetulan");
+    });
+
+    document.getElementById("expPayeeInput").value = "";
+    document.getElementById("expPurposeInput").value = "";
+    document.getElementById("expAmountInput").value = "";
+    saveTxAndRefresh();
+    switchMainTab("ringkasan");
   }
 
-  function renderBalances() {
+  function renderBalancesAndAudit() {
     let bank = 0, cash = 0, totalIn = 0, totalOut = 0;
     transactions.forEach(t => {
       const amt = Number(t.amount || 0);
@@ -669,39 +726,57 @@
         else cash -= amt;
       }
     });
-    const total = bank + cash;
-    document.getElementById("bankBalance").textContent = `RM ${bank.toFixed(2)}`;
-    document.getElementById("cashBalance").textContent = `RM ${cash.toFixed(2)}`;
-    document.getElementById("totalBalance").textContent = `RM ${total.toFixed(2)}`;
-    document.getElementById("inOutSummary").textContent = `Masuk: RM ${totalIn.toFixed(2)} • Keluar: RM ${totalOut.toFixed(2)}`;
+
+    document.getElementById("bankVal").textContent = `RM ${bank.toFixed(2)}`;
+    document.getElementById("cashVal").textContent = `RM ${cash.toFixed(2)}`;
+    document.getElementById("totalVal").textContent = `RM ${(bank + cash).toFixed(2)}`;
+    document.getElementById("inOutVal").textContent = `Masuk: RM ${totalIn.toFixed(2)} • Keluar: RM ${totalOut.toFixed(2)}`;
+
+    const auditEl = document.getElementById("auditSummaryList");
+    if (transactions.length === 0) {
+      auditEl.innerHTML = "Belum ada transaksi direkodkan.";
+    } else {
+      auditEl.innerHTML = transactions.slice(0, 5).map(t => `
+        <div class="member-row">
+          <div>
+            <div class="m-name">${t.desc}</div>
+            <div class="m-id">${t.date} • ${t.account}</div>
+          </div>
+          <strong style="font-size:12px; color:${t.type === 'IN' ? 'var(--success)' : 'var(--danger)'};">
+            ${t.type === 'IN' ? '+' : '-'} RM ${Number(t.amount).toFixed(2)}
+          </strong>
+        </div>
+      `).join("");
+    }
   }
 
-  function renderCorrectionList() {
-    const box = document.getElementById("transactionCorrectionList");
+  function renderCorrectionTab() {
+    const box = document.getElementById("correctionListBox");
     if (transactions.length === 0) {
-      box.innerHTML = `<div style="text-align:center; padding:16px; color:var(--muted); font-size:13px;">Belum ada rekod transaksi untuk disemak atau dibetulkan.</div>`;
+      box.innerHTML = `<div style="font-size:13px; color:var(--muted); padding:10px 0;">Tiada rekod transaksi untuk dibetulkan.</div>`;
       return;
     }
+
     box.innerHTML = transactions.map(t => `
-      <div class="member-item" style="flex-direction:column; align-items:stretch;">
+      <div class="member-row" style="flex-direction:column; align-items:stretch;">
         <div style="display:flex; justify-content:space-between; gap:8px;">
           <div>
-            <div style="font-weight:700; font-size:13px; color:${t.type === 'IN' ? 'var(--success)' : 'var(--danger)'};">
-              ${t.type === 'IN' ? '+ MASUK' : '- KELUAR'}: RM ${Number(t.amount).toFixed(2)}
+            <div style="font-size:12px; font-weight:800; color:${t.type === 'IN' ? 'var(--success)' : 'var(--danger)'};">
+              ${t.type === 'IN' ? 'BAYARAN MASUK' : 'PERBELANJAAN'} • RM ${Number(t.amount).toFixed(2)}
             </div>
             <div style="font-size:13px; margin-top:2px;">${t.desc}</div>
-            <div style="font-size:11px; color:var(--muted); margin-top:2px;">${t.date} • ${t.account}</div>
+            <div class="m-id">${t.date} • ${t.account}${t.forMonth ? " • Bulan: " + t.forMonth : ""}</div>
           </div>
         </div>
-        <div style="display:flex; gap:8px; justify-content:flex-end; margin-top:8px; border-top:1px solid var(--border); padding-top:8px;">
-          <button class="btn btn-edit" onclick="openEditModal('${t.id}')">✏️ Edit Data</button>
-          <button class="btn btn-danger" onclick="deleteTransaction('${t.id}')">🗑️ Padam</button>
+        <div style="display:flex; gap:8px; justify-content:flex-end; margin-top:8px; padding-top:8px; border-top:1px solid var(--border);">
+          <button class="btn btn-edit" onclick="openEditTxModal('${t.id}')">Edit</button>
+          <button class="btn btn-del" onclick="deleteTx('${t.id}')">Padam</button>
         </div>
       </div>
     `).join("");
   }
 
-  function openEditModal(id) {
+  function openEditTxModal(id) {
     const t = transactions.find(x => x.id === id);
     if (!t) return;
     document.getElementById("editTxId").value = t.id;
@@ -709,68 +784,67 @@
     document.getElementById("editTxAmount").value = t.amount;
     document.getElementById("editTxAccount").value = t.account;
     document.getElementById("editTxDate").value = t.date;
-    const monthWrap = document.getElementById("editMonthWrap");
+    const mWrap = document.getElementById("editTxMonthWrap");
     if (t.type === "IN") {
-      monthWrap.style.display = "block";
-      document.getElementById("editTxMonth").value = t.forMonth || START_BILLING_YM;
+      mWrap.style.display = "block";
+      document.getElementById("editTxMonth").value = t.forMonth || START_YM;
     } else {
-      monthWrap.style.display = "none";
+      mWrap.style.display = "none";
     }
-    document.getElementById("editModal").classList.add("open");
+    document.getElementById("editTxModal").classList.add("open");
   }
 
-  function closeEditModal() {
-    document.getElementById("editModal").classList.remove("open");
+  function closeEditTxModal() {
+    document.getElementById("editTxModal").classList.remove("open");
   }
 
-  function saveEditedTransaction() {
+  function saveTxCorrection() {
     const id = document.getElementById("editTxId").value;
     const idx = transactions.findIndex(x => x.id === id);
     if (idx === -1) return;
-    const newAmt = parseFloat(document.getElementById("editTxAmount").value);
-    if (isNaN(newAmt) || newAmt <= 0) {
-      alert("Amaun mestilah lebih daripada 0.");
+    const amt = parseFloat(document.getElementById("editTxAmount").value);
+    if (isNaN(amt) || amt <= 0) {
+      alert("Amaun mestilah lebih besar daripada 0.");
       return;
     }
     transactions[idx].desc = document.getElementById("editTxDesc").value.trim();
-    transactions[idx].amount = newAmt;
+    transactions[idx].amount = amt;
     transactions[idx].account = document.getElementById("editTxAccount").value;
     transactions[idx].date = document.getElementById("editTxDate").value;
     if (transactions[idx].type === "IN") {
       transactions[idx].forMonth = document.getElementById("editTxMonth").value;
     }
-    saveTransactions();
-    closeEditModal();
+    saveTxAndRefresh();
+    closeEditTxModal();
   }
 
-  function deleteTransaction(id) {
-    if (!confirm("Adakah anda pasti mahu memadam rekod transaksi ini?")) return;
+  function deleteTx(id) {
+    if (!confirm("Padam rekod transaksi ini?")) return;
     transactions = transactions.filter(x => x.id !== id);
-    saveTransactions();
+    saveTxAndRefresh();
   }
 
-  function saveTransactions() {
-    localStorage.setItem("kmt_transactions", JSON.stringify(transactions));
+  function saveTxAndRefresh() {
+    localStorage.setItem("kmt_tx_v2", JSON.stringify(transactions));
     renderAll();
   }
 
-  function switchPage(page) {
-    document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
-    document.querySelectorAll(".nav-btn").forEach(b => b.classList.remove("active"));
-    document.getElementById(`page-${page}`).classList.add("active");
-    document.getElementById(`nav-${page}`).classList.add("active");
+  function switchMainTab(tabName) {
+    ["ringkasan", "transaksi", "tetapan"].forEach(t => {
+      document.getElementById(`page-${t}`).classList.toggle("active", t === tabName);
+      document.getElementById(`tab-${t}`).classList.toggle("active", t === tabName);
+    });
   }
 
   function renderAll() {
-    renderBalances();
-    renderStatus();
-    renderCorrectionList();
+    renderBalancesAndAudit();
+    renderSummaryStatus();
+    renderCorrectionTab();
   }
 
-  initMonths();
-  populateMemberSelect();
+  initUI();
   renderAll();
-  syncGoogleSheet(false);
+  syncSheet(false);
 </script>
 </body>
 </html>
