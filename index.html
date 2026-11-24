@@ -97,6 +97,14 @@
       font-size: 10px; font-weight: 700; padding: 3px 7px; border-radius: 7px; text-align: right;
     }
 
+    .advance-box {
+      background: #f0fdf4; border: 1px solid #86efac; border-radius: 11px;
+      padding: 9px 11px; margin-bottom: 10px;
+    }
+    .advance-title { font-size: 12px; font-weight: 800; color: #065f46; margin-bottom: 5px; }
+    .advance-item { font-size: 12px; margin-bottom: 4px; }
+    .advance-item:last-child { margin-bottom: 0; }
+
     label { display: block; font-size: 12px; font-weight: 700; color: #374151; margin-bottom: 4px; }
     input, select {
       width: 100%; padding: 9px 11px; border: 1px solid #d1d5db; border-radius: 10px;
@@ -233,8 +241,9 @@
     </div>
 
     <div class="card">
-      <div class="section-title">3. Ringkasan Pendapatan, Rujukan &amp; Perbelanjaan</div>
+      <div class="section-title">3. Ringkasan Pendapatan, Advance Payment &amp; Perbelanjaan</div>
       <div id="incomeSourcesSummary" style="font-size:12px; margin-bottom:8px;"></div>
+      <div id="advancePaymentSummary"></div>
       <div id="recentAuditList" style="font-size:12px; color:var(--muted);">Belum ada transaksi direkodkan.</div>
     </div>
   </div>
@@ -515,10 +524,10 @@
   localStorage.removeItem("kmt_members");
   localStorage.removeItem("kmt_members_v2");
 
-  let members = JSON.parse(localStorage.getItem("kmt_members_v10") || "[]");
-  let transactions = JSON.parse(localStorage.getItem("kmt_tx_v10") || "[]");
-  let monthlyFee = parseFloat(localStorage.getItem("kmt_fee_v10") || "10.00");
-  let gasWebhookUrl = localStorage.getItem("kmt_gas_webhook_v10") || DEFAULT_GAS_WEBHOOK;
+  let members = JSON.parse(localStorage.getItem("kmt_members_v11") || "[]");
+  let transactions = JSON.parse(localStorage.getItem("kmt_tx_v11") || "[]");
+  let monthlyFee = parseFloat(localStorage.getItem("kmt_fee_v11") || "10.00");
+  let gasWebhookUrl = localStorage.getItem("kmt_gas_webhook_v11") || DEFAULT_GAS_WEBHOOK;
   let selectedMemberObj = null;
   let modalMode = "paid";
   let lastSyncStr = "-";
@@ -616,7 +625,7 @@
 
   function saveGasWebhook() {
     gasWebhookUrl = document.getElementById("gasWebhookInput").value.trim() || DEFAULT_GAS_WEBHOOK;
-    localStorage.setItem("kmt_gas_webhook_v10", gasWebhookUrl);
+    localStorage.setItem("kmt_gas_webhook_v11", gasWebhookUrl);
     updateGasStatusText();
     alert("Pautan Web App Google Sheet berjaya disimpan.");
   }
@@ -673,7 +682,7 @@
     const val = parseFloat(document.getElementById("monthlyFeeInput").value);
     if (!isNaN(val) && val > 0) {
       monthlyFee = val;
-      localStorage.setItem("kmt_fee_v10", String(monthlyFee));
+      localStorage.setItem("kmt_fee_v11", String(monthlyFee));
       document.getElementById("feeAmountInput").value = monthlyFee.toFixed(2);
       renderAll();
     }
@@ -740,7 +749,7 @@
 
         if (cleanList.length > 0) {
           members = cleanList;
-          localStorage.setItem("kmt_members_v10", JSON.stringify(members));
+          localStorage.setItem("kmt_members_v11", JSON.stringify(members));
         }
       }
       lastSyncStr = new Date().toLocaleTimeString("ms-MY");
@@ -1038,6 +1047,44 @@
     alert(`Perbelanjaan RM ${amount.toFixed(2)} direkodkan.${sent ? "\nData telah dihantar ke Google Sheet." : ""}`);
   }
 
+  function renderAdvancePaymentSummary() {
+    const advEl = document.getElementById("advancePaymentSummary");
+    if (!advEl) return;
+
+    const now = new Date();
+    const curYm = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
+    const activeYm = curYm < START_BILLING_YM ? START_BILLING_YM : curYm;
+
+    const map = {};
+    transactions.forEach(t => {
+      if (t.categoryType === "FEE" && t.forMonth && t.forMonth > activeYm) {
+        const key = `${t.memberName || t.desc} (${t.memberId || "-"})`;
+        if (!map[key]) map[key] = { total: 0, items: [] };
+        const amt = Number(t.amount || 0);
+        map[key].total += amt;
+        map[key].items.push(`${t.forMonth}: RM ${amt.toFixed(2)}${t.refNo ? " [Resit: " + t.refNo + "]" : ""}`);
+      }
+    });
+
+    const keys = Object.keys(map);
+    if (keys.length === 0) {
+      advEl.innerHTML = `<div style="font-size:12px; color:var(--muted); margin-bottom:8px;">Tiada rekod advance payment melebihi bulan semasa (${activeYm}).</div>`;
+      return;
+    }
+
+    advEl.innerHTML = `
+      <div class="advance-box">
+        <div class="advance-title">Pecahan Advance Payment Ahli (Selepas ${activeYm})</div>
+        ${keys.map(k => `
+          <div class="advance-item">
+            <strong>${k}</strong> — Jumlah Advance: <strong>RM ${map[k].total.toFixed(2)}</strong><br/>
+            <span style="font-size:11px; color:var(--muted);">${map[k].items.join(" • ")}</span>
+          </div>
+        `).join("")}
+      </div>
+    `;
+  }
+
   function renderFinanceSummary() {
     let bank = 0, cash = 0, totalIn = 0, totalOut = 0;
     const sourceTotals = {};
@@ -1071,6 +1118,8 @@
         `<span style="display:inline-block; background:#ecfdf5; color:#065f46; padding:3px 8px; border-radius:8px; margin:2px 4px 2px 0; font-weight:700;">${k}: RM ${sourceTotals[k].toFixed(2)}</span>`
       ).join("");
     }
+
+    renderAdvancePaymentSummary();
 
     const auditEl = document.getElementById("recentAuditList");
     if (transactions.length === 0) {
@@ -1165,7 +1214,7 @@
   }
 
   function saveAndRender() {
-    localStorage.setItem("kmt_tx_v10", JSON.stringify(transactions));
+    localStorage.setItem("kmt_tx_v11", JSON.stringify(transactions));
     renderAll();
   }
 
