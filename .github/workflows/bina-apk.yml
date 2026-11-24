@@ -24,20 +24,41 @@ jobs:
           distribution: "temurin"
           java-version: "17"
 
+      - name: Sediakan Android SDK
+        uses: android-actions/setup-android@v3
+
       - name: Sediakan folder web Capacitor
         run: |
           mkdir -p www
           cp index.html manifest.json sw.js icon-192.png icon-512.png www/
-          npm init -y
-          npm install @capacitor/core @capacitor/cli @capacitor/android
-          npx cap init "Buku Kewangan KMT MSAS" "my.kmtwp.bukukewangan" --web-dir=www
+          cat << 'EOF' > package.json
+          {
+            "name": "buku-kewangan-kmt-msas",
+            "version": "1.0.0",
+            "private": true,
+            "dependencies": {
+              "@capacitor/core": "^6.0.0",
+              "@capacitor/cli": "^6.0.0",
+              "@capacitor/android": "^6.0.0"
+            }
+          }
+          EOF
+          cat << 'EOF' > capacitor.config.json
+          {
+            "appId": "my.kmtwp.bukukewangan",
+            "appName": "Buku Kewangan KMT MSAS",
+            "webDir": "www"
+          }
+          EOF
+          npm install
           npx cap add android
           npx cap sync android
 
       - name: Jana fail APK Debug
         run: |
           cd android
-          ./gradlew assembleDebug
+          chmod +x gradlew
+          ./gradlew assembleDebug --no-daemon
 
       - name: Muat naik APK sebagai Artifact
         uses: actions/upload-artifact@v4
