@@ -23,72 +23,61 @@
       --warn-text: #92400e;
     }
     * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-    body { margin: 0; background: var(--bg); color: var(--text); padding-bottom: 36px; }
+    body { margin: 0; background: var(--bg); color: var(--text); padding-bottom: 84px; }
 
     header {
-      background: var(--primary); color: #fff; padding: 14px 16px;
-      display: flex; align-items: center; gap: 12px; position: sticky; top: 0; z-index: 25;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.12);
+      background: var(--primary); color: #fff; padding: 12px 14px;
+      display: flex; align-items: center; justify-content: space-between; gap: 10px;
+      position: sticky; top: 0; z-index: 30; box-shadow: 0 2px 6px rgba(0,0,0,0.14);
     }
-    header img { width: 40px; height: 40px; border-radius: 9px; background: #fff; object-fit: cover; }
-    header h1 { font-size: 16px; margin: 0; line-height: 1.25; }
-    header p { font-size: 11px; margin: 2px 0 0; opacity: 0.88; }
+    .brand { display: flex; align-items: center; gap: 10px; min-width: 0; }
+    header img { width: 38px; height: 38px; border-radius: 9px; background: #fff; object-fit: cover; flex-shrink: 0; }
+    header h1 { font-size: 15px; margin: 0; line-height: 1.2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    header p { font-size: 10px; margin: 2px 0 0; opacity: 0.9; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+    .audio-btn {
+      background: rgba(255,255,255,0.16); border: 1px solid rgba(255,255,255,0.35);
+      color: #fff; border-radius: 9px; padding: 6px 9px; font-size: 11px; font-weight: 700;
+      cursor: pointer; flex-shrink: 0;
+    }
 
     .container { max-width: 640px; margin: 0 auto; padding: 12px; }
 
-    .top-tabs {
-      display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 12px;
-    }
-    .top-tab {
-      background: #fff; border: 1px solid var(--border); border-radius: 12px;
-      padding: 10px 8px; font-size: 13px; font-weight: 700; color: var(--text);
-      cursor: pointer; text-align: center;
-    }
-    .top-tab.active {
-      background: var(--primary); color: #fff; border-color: var(--primary);
-    }
-
-    .notice-banner {
+    .sync-banner {
       background: var(--warn-bg); border: 1px solid #f59e0b; color: var(--warn-text);
-      padding: 10px 12px; border-radius: 12px; font-size: 12px; font-weight: 600;
-      margin-bottom: 12px;
+      padding: 9px 12px; border-radius: 12px; font-size: 12px; font-weight: 600;
+      margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; gap: 8px;
     }
 
     .card {
-      background: var(--card); border: 1px solid var(--border); border-radius: 16px;
+      background: var(--card); border: 1px solid var(--border); border-radius: 15px;
       padding: 14px; margin-bottom: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.04);
     }
-    .section-title { font-size: 16px; font-weight: 800; margin: 0 0 10px; color: var(--primary); }
+    .section-title { font-size: 15px; font-weight: 800; margin: 0 0 10px; color: var(--primary); }
 
     .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
-    .mini-box {
-      border: 1px solid var(--border); border-radius: 12px; padding: 12px; background: #fff;
-    }
-    .mini-label { font-size: 12px; color: var(--muted); margin-bottom: 4px; }
-    .mini-val { font-size: 19px; font-weight: 800; }
+    .mini-box { border: 1px solid var(--border); border-radius: 12px; padding: 11px; background: #fff; }
+    .mini-label { font-size: 11px; color: var(--muted); margin-bottom: 3px; }
+    .mini-val { font-size: 18px; font-weight: 800; }
 
     .total-banner {
-      background: var(--primary); color: #fff; border-radius: 14px; padding: 14px 16px;
+      background: var(--primary); color: #fff; border-radius: 14px; padding: 13px 15px;
       display: flex; justify-content: space-between; align-items: center; margin-top: 8px;
     }
-    .total-banner .big { font-size: 22px; font-weight: 800; }
+    .total-banner .big { font-size: 21px; font-weight: 800; }
 
     .partition-box {
-      border: 1px solid var(--border); border-radius: 14px; padding: 12px;
-      margin-bottom: 12px; background: #fafafa;
+      border: 1px solid var(--border); border-radius: 13px; padding: 11px;
+      margin-bottom: 10px; background: #f9fafb;
     }
-    .partition-header {
-      display: flex; justify-content: space-between; align-items: center; gap: 8px;
-      margin-bottom: 8px;
+    .partition-top {
+      display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 8px;
     }
     .partition-title { font-size: 13px; font-weight: 800; }
-    .partition-count { font-size: 12px; font-weight: 700; padding: 3px 8px; border-radius: 8px; }
-    .count-paid { background: #d1fae5; color: #065f46; }
-    .count-unpaid { background: #fee2e2; color: #991b1b; }
 
     .member-row {
       background: #fff; border: 1px solid var(--border); border-radius: 10px;
-      padding: 9px 11px; margin-bottom: 6px; display: flex;
+      padding: 8px 10px; margin-bottom: 6px; display: flex;
       justify-content: space-between; align-items: center; gap: 8px;
     }
     .member-row:last-child { margin-bottom: 0; }
@@ -97,29 +86,40 @@
 
     label { display: block; font-size: 12px; font-weight: 700; color: #374151; margin-bottom: 4px; }
     input, select {
-      width: 100%; padding: 10px 12px; border: 1px solid #d1d5db; border-radius: 10px;
+      width: 100%; padding: 9px 11px; border: 1px solid #d1d5db; border-radius: 10px;
       font-size: 14px; background: #fff; color: var(--text);
     }
     input:focus, select:focus { outline: none; border-color: var(--primary); }
 
     .btn {
-      display: inline-flex; align-items: center; justify-content: center; gap: 6px;
-      padding: 9px 12px; border-radius: 10px; border: none; font-size: 13px; font-weight: 700;
+      display: inline-flex; align-items: center; justify-content: center; gap: 5px;
+      padding: 8px 11px; border-radius: 10px; border: none; font-size: 12px; font-weight: 700;
       cursor: pointer;
     }
     .btn-primary { background: var(--primary); color: #fff; width: 100%; padding: 12px; font-size: 14px; }
     .btn-primary:active { background: var(--primary-light); }
-    .btn-outline { background: #fff; border: 1px solid #d1d5db; color: var(--text); font-size: 12px; padding: 7px 10px; }
-    .btn-list { background: #ecfdf5; border: 1px solid #6ee7b7; color: #065f46; font-size: 11px; padding: 6px 10px; }
-    .btn-list-unpaid { background: #fef2f2; border: 1px solid #fca5a5; color: #991b1b; font-size: 11px; padding: 6px 10px; }
-    .btn-email { background: #eff6ff; border: 1px solid #93c5fd; color: #1d4ed8; font-size: 11px; padding: 5px 8px; border-radius: 8px; }
-    .btn-edit { background: #fffbeb; border: 1px solid #fcd34d; color: #b45309; font-size: 11px; padding: 6px 10px; }
-    .btn-del { background: #fef2f2; border: 1px solid #fca5a5; color: #dc2626; font-size: 11px; padding: 6px 10px; }
+    .btn-outline { background: #fff; border: 1px solid #d1d5db; color: var(--text); padding: 6px 10px; }
+    .btn-paid-list { background: #d1fae5; color: #065f46; border: 1px solid #6ee7b7; font-size: 11px; padding: 5px 9px; }
+    .btn-unpaid-list { background: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; font-size: 11px; padding: 5px 9px; }
+    .btn-email { background: #eff6ff; color: #1d4ed8; border: 1px solid #93c5fd; font-size: 11px; padding: 5px 8px; border-radius: 8px; }
+    .btn-edit { background: #fffbeb; color: #b45309; border: 1px solid #fcd34d; }
+    .btn-del { background: #fef2f2; color: #dc2626; border: 1px solid #fca5a5; }
 
-    .matched-member-box {
+    .matched-box {
       background: #ecfdf5; border: 1px solid #6ee7b7; color: #065f46;
-      border-radius: 10px; padding: 10px 12px; margin-bottom: 10px; font-size: 13px;
+      border-radius: 10px; padding: 9px 11px; margin-bottom: 10px; font-size: 13px;
     }
+
+    .bottom-nav {
+      position: fixed; bottom: 0; left: 0; right: 0; background: #fff;
+      border-top: 1px solid var(--border); display: grid; grid-template-columns: repeat(4, 1fr);
+      padding: 6px 4px; z-index: 35;
+    }
+    .nav-item {
+      background: none; border: none; padding: 5px 2px; font-size: 11px; font-weight: 700;
+      color: var(--muted); display: flex; flex-direction: column; align-items: center; gap: 2px; cursor: pointer;
+    }
+    .nav-item.active { color: var(--primary); }
 
     .page { display: none; }
     .page.active { display: block; }
@@ -137,146 +137,191 @@
 </head>
 <body>
 
+<audio id="bgMusic" src="lagu-kelab.mp3" loop preload="auto"></audio>
+
 <header>
-  <img src="icon-192.png" alt="Logo Kelab" />
-  <div>
-    <h1>Buku Kewangan KMT MSAS</h1>
-    <p>Kelab Memanah Tradisional Warisan Perdana Sg Isap</p>
+  <div class="brand">
+    <img src="icon-192.png" alt="Logo Kelab" />
+    <div>
+      <h1>Buku Kewangan KMT MSAS</h1>
+      <p>Kelab Memanah Tradisional Warisan Perdana Sg Isap</p>
+    </div>
   </div>
+  <button type="button" class="audio-btn" id="musicToggleBtn" onclick="toggleMusic()">🔇 Muzik</button>
 </header>
 
 <div class="container">
-  <!-- 3 Tab Utama Selaras Aplikasi -->
-  <div class="top-tabs">
-    <button class="top-tab active" id="tab-ringkasan" onclick="switchMainTab('ringkasan')">1. Ringkasan</button>
-    <button class="top-tab" id="tab-transaksi" onclick="switchMainTab('transaksi')">2. Transaksi</button>
-    <button class="top-tab" id="tab-tetapan" onclick="switchMainTab('tetapan')">3. Tetapan &amp; Audit</button>
+  <div class="sync-banner">
+    <span id="syncBannerText">Menyegerak data ahli berdaftar dari Google Sheet...</span>
+    <button type="button" class="btn btn-outline" onclick="syncMembers(true)">Segerak Sheet</button>
   </div>
 
-  <div class="notice-banner" id="topNoticeBanner">
-    Kiraan yuran bulanan bermula 12/2026 (Disember 2026). Menunggu data terkini...
-  </div>
-
-  <!-- ================= 1. RINGKASAN ================= -->
-  <div id="page-ringkasan" class="page active">
+  <!-- TAB 1: STATUS YURAN & RINGKASAN MUKA DEPAN -->
+  <div id="page-status" class="page active">
     <div class="card">
       <div class="section-title">1. Wang Sebenar di Bank &amp; Peti Tunai</div>
       <div class="grid-2">
         <div class="mini-box">
           <div class="mini-label">Akaun Bank</div>
-          <div class="mini-val" id="bankVal">RM 0.00</div>
+          <div class="mini-val" id="bankBalance">RM 0.00</div>
         </div>
         <div class="mini-box">
           <div class="mini-label">Peti Tunai</div>
-          <div class="mini-val" id="cashVal">RM 0.00</div>
+          <div class="mini-val" id="cashBalance">RM 0.00</div>
         </div>
       </div>
       <div class="total-banner">
         <div>
           <div style="font-weight:800; font-size:14px;">Jumlah Wang Kelab</div>
-          <div style="font-size:11px; opacity:0.9;" id="inOutVal">Masuk: RM 0.00 • Keluar: RM 0.00</div>
+          <div style="font-size:11px; opacity:0.9;" id="inOutBreakdown">Masuk: RM 0.00 • Keluar: RM 0.00</div>
         </div>
-        <div class="big" id="totalVal">RM 0.00</div>
+        <div class="big" id="totalBalance">RM 0.00</div>
       </div>
     </div>
 
     <div class="card">
-      <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; margin-bottom:10px;">
-        <div class="section-title" style="margin:0;">2. Status Yuran Ahli</div>
-        <button class="btn btn-outline" onclick="syncSheet(true)">Segerak Sheet</button>
-      </div>
+      <div class="section-title">2. Status Yuran Ahli (Mula 12/2026)</div>
 
       <div class="grid-2">
         <div>
           <label>Bulan Semakan</label>
-          <select id="summaryMonthSelect" onchange="renderSummaryStatus()"></select>
+          <select id="statusMonthSelect" onchange="renderAll()"></select>
         </div>
         <div>
           <label>Kadar Yuran Bulanan (RM)</label>
-          <input type="number" id="feeRateInput" step="0.01" value="10.00" onchange="updateFeeRate()" />
+          <input type="number" id="monthlyFeeInput" step="0.01" value="10.00" onchange="saveFeeRate()" />
         </div>
       </div>
 
-      <div style="font-size:12px; color:var(--muted); margin-bottom:10px;" id="sheetMetaText">
-        Jumlah peserta: 0 • Segerak: -
+      <div style="font-size:12px; color:var(--muted); margin-bottom:10px;" id="memberCountSummary">
+        Jumlah ahli berdaftar: 0
       </div>
 
-      <!-- PARTISAN 1: SUDAH BAYAR -->
+      <!-- BAHAGIAN 1: SUDAH BAYAR -->
       <div class="partition-box">
-        <div class="partition-header">
-          <div class="partition-title" style="color:#065f46;" id="paidSummaryHeadline">0/0 sudah buat bayaran bulan semasa</div>
-          <button class="btn btn-list" onclick="openFullListModal('paid')">Senarai Penuh Bayar</button>
+        <div class="partition-top">
+          <div class="partition-title" style="color:#065f46;" id="paidCountHeadline">0/0 sudah buat bayaran bulan semasa</div>
+          <button type="button" class="btn btn-paid-list" onclick="openListModal('paid')">Senarai Penuh Bayar</button>
         </div>
-        <div id="paidPreviewList"></div>
+        <div id="paidShortList"></div>
       </div>
 
-      <!-- PARTISAN 2: BELUM BAYAR -->
+      <!-- BAHAGIAN 2: BELUM BAYAR -->
       <div class="partition-box" style="margin-bottom:0;">
-        <div class="partition-header">
-          <div class="partition-title" style="color:#991b1b;" id="unpaidSummaryHeadline">0 belum buat bayaran bulan semasa</div>
-          <button class="btn btn-list-unpaid" onclick="openFullListModal('unpaid')">Senarai Penuh Belum</button>
+        <div class="partition-top">
+          <div class="partition-title" style="color:#991b1b;" id="unpaidCountHeadline">0/0 belum buat bayaran bulan semasa</div>
+          <button type="button" class="btn btn-unpaid-list" onclick="openListModal('unpaid')">Senarai Penuh Belum</button>
         </div>
-        <div id="unpaidPreviewList"></div>
+        <div id="unpaidShortList"></div>
       </div>
     </div>
 
     <div class="card">
-      <div class="section-title">3. Bukti &amp; Rujukan Juruaudit</div>
-      <div id="auditSummaryList" style="font-size:13px; color:var(--muted);">Belum ada transaksi direkodkan.</div>
+      <div class="section-title">3. Ringkasan Pendapatan &amp; Perbelanjaan</div>
+      <div id="incomeSourcesSummary" style="font-size:12px; margin-bottom:8px;"></div>
+      <div id="recentAuditList" style="font-size:12px; color:var(--muted);">Belum ada transaksi direkodkan.</div>
     </div>
   </div>
 
-  <!-- ================= 2. TRANSAKSI ================= -->
-  <div id="page-transaksi" class="page">
+  <!-- TAB 2: BAYAR YURAN -->
+  <div id="page-bayar" class="page">
     <div class="card">
-      <div class="section-title">Terima Bayaran Yuran (Jana Resit)</div>
+      <div class="section-title">Terima Bayaran Yuran (Masuk Pendapatan Kelab)</div>
 
       <div style="margin-bottom:10px;">
-        <label>Nombor Ahli (Contoh: 0001 atau KMTWP/2026/0001)</label>
+        <label>Nombor ID Ahli (Contoh: KMT/2026/0001 atau 0001)</label>
         <input
           type="text"
-          id="memberNumberInput"
-          placeholder="Masukkan no. ahli untuk cari nama automatik..."
-          oninput="autoFillMemberByNumber()"
+          id="feeMemberIdInput"
+          placeholder="Taip no. ID ahli (contoh: KMT/2026/0001 atau 0001)..."
+          oninput="lookupMemberById()"
         />
       </div>
 
-      <div class="matched-member-box" id="matchedMemberBox">
-        Nama Ahli: <strong>Belum dijumpai</strong> — Masukkan nombor ahli di atas.
+      <div class="matched-box" id="feeMatchedMemberInfo">
+        Nama Ahli: <strong>Belum dijumpai</strong> — Masukkan nombor ID ahli di atas.
       </div>
 
       <div class="grid-2">
         <div>
           <label>Untuk Bulan Yuran</label>
-          <select id="payMonthSelect"></select>
+          <select id="feeMonthSelect"></select>
         </div>
         <div>
-          <label>Amaun (RM)</label>
-          <input type="number" id="payAmountInput" step="0.01" value="10.00" />
+          <label>Amaun Yuran (RM)</label>
+          <input type="number" id="feeAmountInput" step="0.01" value="10.00" />
         </div>
       </div>
 
       <div class="grid-2">
         <div>
           <label>Akaun Terima</label>
-          <select id="payAccountSelect">
-            <option value="Akaun Bank">Akaun Bank</option>
+          <select id="feeAccountSelect">
             <option value="Peti Tunai">Peti Tunai</option>
+            <option value="Akaun Bank">Akaun Bank</option>
           </select>
         </div>
         <div>
-          <label>Tarikh Urus Niaga</label>
-          <input type="date" id="payDateInput" />
+          <label>Tarikh Bayaran</label>
+          <input type="date" id="feeDateInput" />
         </div>
       </div>
 
-      <button class="btn btn-primary" onclick="submitFeePayment()">Keluarkan Resit Rasmi</button>
+      <button type="button" class="btn btn-primary" onclick="recordFeePayment()">Keluarkan Resit &amp; Kemas Kini Status</button>
+    </div>
+  </div>
+
+  <!-- TAB 3: PENDAPATAN LAIN & PERBELANJAAN -->
+  <div id="page-belanja" class="page">
+    <div class="card">
+      <div class="section-title">Tambah Dana / Pendapatan Kelab</div>
+      <p style="font-size:12px; color:var(--muted); margin-top:0;">
+        Rekod sumber pendapatan kelab selain yuran seperti Kelas Memanah, Sumbangan, Derma, Jualan (Baju, Bow, Accessories, dll.) dan lain-lain.
+      </p>
+
+      <div class="grid-2">
+        <div>
+          <label>Sumber Pendapatan</label>
+          <select id="incSourceSelect">
+            <option value="Kelas Memanah">Kelas Memanah</option>
+            <option value="Sumbangan">Sumbangan</option>
+            <option value="Derma">Derma</option>
+            <option value="Jualan (Baju / Bow / Accessories)">Jualan (Baju / Bow / Accessories)</option>
+            <option value="Pendapatan Lain-lain">Pendapatan Lain-lain</option>
+          </select>
+        </div>
+        <div>
+          <label>Amaun Diterima (RM)</label>
+          <input type="number" id="incAmountInput" step="0.01" placeholder="50.00" />
+        </div>
+      </div>
+
+      <div style="margin-bottom:10px;">
+        <label>Butiran / Keterangan</label>
+        <input type="text" id="incDescInput" placeholder="Contoh: Jualan baju kelab / Yuran kelas memanah" />
+      </div>
+
+      <div class="grid-2">
+        <div>
+          <label>Akaun Terima</label>
+          <select id="incAccountSelect">
+            <option value="Peti Tunai">Peti Tunai</option>
+            <option value="Akaun Bank">Akaun Bank</option>
+          </select>
+        </div>
+        <div>
+          <label>Tarikh</label>
+          <input type="date" id="incDateInput" />
+        </div>
+      </div>
+
+      <button type="button" class="btn btn-primary" onclick="recordOtherIncome()">Simpan Dana Pendapatan Kelab</button>
     </div>
 
     <div class="card">
-      <div class="section-title">Rekod Perbelanjaan (Jana Baucar &amp; Bukti)</div>
+      <div class="section-title">Rekod Perbelanjaan (Baucar Keluar)</div>
       <div style="margin-bottom:10px;">
-        <label>Kategori</label>
+        <label>Kategori Perbelanjaan</label>
         <select id="expCategorySelect">
           <option value="Belian Sasaran">Belian Sasaran</option>
           <option value="Peralatan Memanah">Peralatan Memanah</option>
@@ -286,7 +331,7 @@
         </select>
       </div>
       <div style="margin-bottom:10px;">
-        <label>Penerima</label>
+        <label>Penerima / Pembekal</label>
         <input type="text" id="expPayeeInput" placeholder="Nama pembekal / penerima" />
       </div>
       <div style="margin-bottom:10px;">
@@ -310,38 +355,38 @@
         <label>Tarikh</label>
         <input type="date" id="expDateInput" />
       </div>
-      <button class="btn btn-primary" onclick="submitExpense()">Simpan Rekod Perbelanjaan</button>
+      <button type="button" class="btn btn-primary" onclick="recordExpense()">Simpan Rekod Perbelanjaan</button>
     </div>
   </div>
 
-  <!-- ================= 3. TETAPAN & AUDIT (PEMBETULAN KEWANGAN) ================= -->
-  <div id="page-tetapan" class="page">
+  <!-- TAB 4: PEMBETULAN KEWANGAN -->
+  <div id="page-pembetulan" class="page">
     <div class="card">
       <div class="section-title">Pembetulan Kewangan &amp; Rekod Transaksi</div>
       <p style="font-size:12px; color:var(--muted); margin-top:0;">
-        Sunting atau padam rekod sekiranya berlaku kesilapan kemasukan data pembayaran atau perbelanjaan. Baki &amp; status yuran akan dikemas kini serta-merta.
+        Edit atau padam mana-mana rekod yuran, pendapatan lain, atau perbelanjaan sekiranya tersalah key-in.
       </p>
-      <div id="correctionListBox"></div>
+      <div id="correctionListContainer"></div>
     </div>
   </div>
 </div>
 
-<!-- MODAL SENARAI PENUH AHLI (SUDAH BAYAR / BELUM BAYAR) -->
-<div class="modal-bg" id="fullListModal">
+<!-- MODAL SENARAI PENUH AHLI -->
+<div class="modal-bg" id="listModal">
   <div class="modal-card">
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-      <div class="section-title" style="margin:0;" id="fullListTitle">Senarai Penuh</div>
-      <button class="btn btn-outline" onclick="closeFullListModal()">Tutup</button>
+      <div class="section-title" style="margin:0;" id="listModalTitle">Senarai Penuh</div>
+      <button type="button" class="btn btn-outline" onclick="closeListModal()">Tutup</button>
     </div>
-    <input type="text" id="modalSearchInput" placeholder="Cari nama atau no. ahli..." oninput="renderFullListModal()" style="margin-bottom:10px;" />
-    <div id="fullListBody"></div>
+    <input type="text" id="listModalSearch" placeholder="Cari nama atau ID ahli..." oninput="renderListModal()" style="margin-bottom:10px;" />
+    <div id="listModalBody"></div>
   </div>
 </div>
 
 <!-- MODAL EDIT TRANSAKSI -->
-<div class="modal-bg" id="editTxModal">
+<div class="modal-bg" id="editModal">
   <div class="modal-card">
-    <div class="section-title">Pembetulan Data Transaksi</div>
+    <div class="section-title">Edit Rekod Kewangan</div>
     <input type="hidden" id="editTxId" />
     <div style="margin-bottom:10px;">
       <label>Keterangan</label>
@@ -355,8 +400,8 @@
       <div>
         <label>Akaun</label>
         <select id="editTxAccount">
-          <option value="Akaun Bank">Akaun Bank</option>
           <option value="Peti Tunai">Peti Tunai</option>
+          <option value="Akaun Bank">Akaun Bank</option>
         </select>
       </div>
     </div>
@@ -365,23 +410,31 @@
         <label>Tarikh</label>
         <input type="date" id="editTxDate" />
       </div>
-      <div id="editTxMonthWrap">
+      <div id="editFeeMonthWrap">
         <label>Bulan Yuran</label>
         <select id="editTxMonth"></select>
       </div>
     </div>
     <div style="display:flex; gap:8px; margin-top:12px;">
-      <button class="btn btn-outline" style="flex:1;" onclick="closeEditTxModal()">Batal</button>
-      <button class="btn btn-primary" style="flex:1;" onclick="saveTxCorrection()">Simpan Pembetulan</button>
+      <button type="button" class="btn btn-outline" style="flex:1;" onclick="closeEditModal()">Batal</button>
+      <button type="button" class="btn btn-primary" style="flex:1;" onclick="saveEditedTx()">Simpan Pembetulan</button>
     </div>
   </div>
 </div>
 
-<script>
-  const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ-RK3Xy6UDixtvV5ys_HkyGm9uVKidkOtDIXTYH8tjKmCW1eZDvr8CHnvsY60gYhxZTc6t10rJodR4/pub?gid=512720693&single=true&output=csv";
-  const START_YM = "2026-12"; // Mula kiraan yuran: Disember 2026
+<!-- NAVIGASI BAWAH -->
+<nav class="bottom-nav">
+  <button type="button" class="nav-item active" id="nav-status" onclick="switchPage('status')"><span>📋</span>Status Yuran</button>
+  <button type="button" class="nav-item" id="nav-bayar" onclick="switchPage('bayar')"><span>💳</span>Bayar Yuran</button>
+  <button type="button" class="nav-item" id="nav-belanja" onclick="switchPage('belanja')"><span>💰</span>Dana &amp; Belanja</button>
+  <button type="button" class="nav-item" id="nav-pembetulan" onclick="switchPage('pembetulan')"><span>🛠️</span>Pembetulan</button>
+</nav>
 
-  const MONTHS = [
+<script>
+  const GOOGLE_SHEET_CSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ-RK3Xy6UDixtvV5ys_HkyGm9uVKidkOtDIXTYH8tjKmCW1eZDvr8CHnvsY60gYhxZTc6t10rJodR4/pub?gid=512720693&single=true&output=csv";
+  const START_BILLING_YM = "2026-12"; // Mula kiraan yuran: Disember 2026
+
+  const MONTH_OPTIONS = [
     { ym: "2026-11", label: "11/2026 (Nov)" },
     { ym: "2026-12", label: "12/2026 (Dis - Mula)" },
     { ym: "2027-01", label: "01/2027 (Jan)" },
@@ -398,192 +451,273 @@
     { ym: "2027-12", label: "12/2027 (Dis)" }
   ];
 
-  let members = JSON.parse(localStorage.getItem("kmt_members_v2") || "[]");
-  let transactions = JSON.parse(localStorage.getItem("kmt_tx_v2") || "[]");
-  let monthlyFee = parseFloat(localStorage.getItem("kmt_fee_v2") || "10.00");
-  let matchedMember = null;
-  let currentModalType = "paid";
-  let lastSyncTime = "-";
+  // Bersihkan kunci cache lama versi sebelum ini yang menyimpan baris bukan ahli
+  localStorage.removeItem("kmt_members");
+  localStorage.removeItem("kmt_members_v2");
 
-  function initUI() {
-    document.getElementById("feeRateInput").value = monthlyFee.toFixed(2);
-    document.getElementById("payAmountInput").value = monthlyFee.toFixed(2);
+  let members = JSON.parse(localStorage.getItem("kmt_members_v4") || "[]");
+  let transactions = JSON.parse(localStorage.getItem("kmt_tx_v4") || "[]");
+  let monthlyFee = parseFloat(localStorage.getItem("kmt_fee_v4") || "10.00");
+  let selectedMemberObj = null;
+  let modalMode = "paid";
+  let lastSyncStr = "-";
+  let musicPlaying = false;
 
-    ["summaryMonthSelect", "payMonthSelect", "editTxMonth"].forEach(id => {
-      const sel = document.getElementById(id);
-      sel.innerHTML = MONTHS.map(m => `<option value="${m.ym}">${m.label}</option>`).join("");
+  function toggleMusic() {
+    const audio = document.getElementById("bgMusic");
+    const btn = document.getElementById("musicToggleBtn");
+    if (!audio) return;
+    if (audio.paused) {
+      audio.play().then(() => {
+        musicPlaying = true;
+        btn.textContent = "🔊 Muzik";
+      }).catch(() => {
+        alert("Pastikan fail lagu-kelab.mp3 sudah dimuat naik ke GitHub dan tekan semula.");
+      });
+    } else {
+      audio.pause();
+      musicPlaying = false;
+      btn.textContent = "🔇 Muzik";
+    }
+  }
+
+  document.addEventListener("pointerdown", function onceInteract() {
+    const audio = document.getElementById("bgMusic");
+    const btn = document.getElementById("musicToggleBtn");
+    if (audio && audio.paused && !musicPlaying) {
+      audio.play().then(() => {
+        musicPlaying = true;
+        btn.textContent = "🔊 Muzik";
+      }).catch(() => {});
+    }
+    document.removeEventListener("pointerdown", onceInteract);
+  });
+
+  function initForms() {
+    document.getElementById("monthlyFeeInput").value = monthlyFee.toFixed(2);
+    document.getElementById("feeAmountInput").value = monthlyFee.toFixed(2);
+
+    ["statusMonthSelect", "feeMonthSelect", "editTxMonth"].forEach(id => {
+      const el = document.getElementById(id);
+      el.innerHTML = MONTH_OPTIONS.map(m => `<option value="${m.ym}">${m.label}</option>`).join("");
     });
 
     const now = new Date();
     const curYm = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
-    const validSummaryYm = MONTHS.some(m => m.ym === curYm) ? curYm : "2026-12";
-    document.getElementById("summaryMonthSelect").value = validSummaryYm;
-    document.getElementById("payMonthSelect").value = curYm < START_YM ? START_YM : validSummaryYm;
+    const defaultYm = MONTH_OPTIONS.some(m => m.ym === curYm) ? curYm : "2026-12";
+    const activeYm = defaultYm < START_BILLING_YM ? START_BILLING_YM : defaultYm;
+
+    document.getElementById("statusMonthSelect").value = activeYm;
+    document.getElementById("feeMonthSelect").value = activeYm;
 
     const today = now.toISOString().split("T")[0];
-    document.getElementById("payDateInput").value = today;
+    document.getElementById("feeDateInput").value = today;
+    document.getElementById("incDateInput").value = today;
     document.getElementById("expDateInput").value = today;
   }
 
-  function updateFeeRate() {
-    const val = parseFloat(document.getElementById("feeRateInput").value);
+  function saveFeeRate() {
+    const val = parseFloat(document.getElementById("monthlyFeeInput").value);
     if (!isNaN(val) && val > 0) {
       monthlyFee = val;
-      localStorage.setItem("kmt_fee_v2", String(monthlyFee));
-      document.getElementById("payAmountInput").value = monthlyFee.toFixed(2);
-      renderSummaryStatus();
+      localStorage.setItem("kmt_fee_v4", String(monthlyFee));
+      document.getElementById("feeAmountInput").value = monthlyFee.toFixed(2);
+      renderAll();
     }
   }
 
   function parseCSV(text) {
     const rows = [];
-    let cur = "", q = false, row = [];
+    let cur = "", inQuotes = false, row = [];
     for (let i = 0; i < text.length; i++) {
-      const c = text[i], n = text[i + 1];
-      if (c === '"' && q && n === '"') { cur += '"'; i++; }
-      else if (c === '"') { q = !q; }
-      else if (c === "," && !q) { row.push(cur.trim()); cur = ""; }
-      else if ((c === "\n" || c === "\r") && !q) {
+      const c = text[i], next = text[i + 1];
+      if (c === '"' && inQuotes && next === '"') { cur += '"'; i++; }
+      else if (c === '"') { inQuotes = !inQuotes; }
+      else if (c === "," && !inQuotes) { row.push(cur.trim()); cur = ""; }
+      else if ((c === "\n" || c === "\r") && !inQuotes) {
         if (cur.length || row.length) { row.push(cur.trim()); rows.push(row); }
         cur = ""; row = [];
-        if (c === "\r" && n === "\n") i++;
+        if (c === "\r" && next === "\n") i++;
       } else cur += c;
     }
     if (cur.length || row.length) { row.push(cur.trim()); rows.push(row); }
     return rows;
   }
 
-  async function syncSheet(showAlert = false) {
+  function isValidMemberName(name) {
+    if (!name) return false;
+    const low = name.toLowerCase().trim();
+    if (low === "nama penuh" || low === "nama" || low === "full name" || low === "timestamp") return false;
+    if (low.includes("buka kelulusan") || low.includes("menyemak dan merekodkan") || low.includes("keputusan")) return false;
+    if (low.length < 3) return false;
+    return true;
+  }
+
+  function normalizeIdKey(idStr) {
+    return String(idStr || "").trim().toLowerCase();
+  }
+
+  async function syncMembers(showNotice = false) {
     try {
-      const res = await fetch(CSV_URL + "&t=" + Date.now());
-      const txt = await res.text();
-      const rows = parseCSV(txt);
+      const res = await fetch(GOOGLE_SHEET_CSV + "&t=" + Date.now());
+      const csv = await res.text();
+      const rows = parseCSV(csv);
       if (rows.length > 1) {
         const headers = rows[0].map(h => h.toLowerCase());
         const nameIdx = headers.findIndex(h => h.includes("nama"));
-        const idIdx = headers.findIndex(h => h.includes("kmtwp") || h.includes("no ahli") || h.includes("no. ahli") || h.includes("id"));
+        const idIdx = headers.findIndex(h => h.includes("no. ahli") || h.includes("no ahli") || h.includes("id ahli") || h === "id");
         const emailIdx = headers.findIndex(h => h.includes("email") || h.includes("emel") || h.includes("e-mel"));
 
-        const list = [];
+        const cleanList = [];
         let seq = 1;
         for (let i = 1; i < rows.length; i++) {
           const r = rows[i];
-          const name = (nameIdx >= 0 ? r[nameIdx] : r[1] || r[0] || "").trim();
-          if (!name) continue;
-          let id = (idIdx >= 0 ? r[idIdx] : "").trim();
-          if (!id) id = `KMTWP/2026/${String(seq).padStart(4, "0")}`;
+          const rawName = (nameIdx >= 0 ? r[nameIdx] : r[1] || r[0] || "").trim();
+          if (!isValidMemberName(rawName)) continue;
+
+          let memberId = (idIdx >= 0 ? r[idIdx] : "").trim();
+          if (!memberId) {
+            memberId = `KMT/2026/${String(seq).padStart(4, "0")}`;
+          }
           seq++;
+
           const email = (emailIdx >= 0 ? r[emailIdx] : "").trim();
-          list.push({ id, name, email });
+          cleanList.push({ id: memberId, name: rawName, email });
         }
-        if (list.length > 0) {
-          members = list;
-          localStorage.setItem("kmt_members_v2", JSON.stringify(members));
+
+        if (cleanList.length > 0) {
+          members = cleanList;
+          localStorage.setItem("kmt_members_v4", JSON.stringify(members));
         }
       }
-      lastSyncTime = new Date().toLocaleTimeString("ms-MY");
-      if (showAlert) alert(`Senarai ahli dikemas kini (${members.length} ahli).`);
-    } catch (e) {
-      lastSyncTime = "Luar talian";
+      lastSyncStr = new Date().toLocaleTimeString("ms-MY");
+      document.getElementById("syncBannerText").textContent = `Senarai ahli dikemas kini (${members.length} ahli) • ${lastSyncStr}`;
+      if (showNotice) alert(`Berjaya segerak ${members.length} ahli berdaftar.`);
+    } catch (err) {
+      document.getElementById("syncBannerText").textContent = `Mod luar talian (${members.length} ahli berdaftar)`;
     }
     renderAll();
   }
 
-  function getPaidAmountForMonth(memberId, ym) {
-    return transactions
-      .filter(t => t.type === "IN" && t.memberId === memberId && t.forMonth === ym)
-      .reduce((sum, t) => sum + Number(t.amount || 0), 0);
-  }
+  function lookupMemberById() {
+    const query = document.getElementById("feeMemberIdInput").value.trim().toLowerCase();
+    const infoBox = document.getElementById("feeMatchedMemberInfo");
+    if (!query) {
+      selectedMemberObj = null;
+      infoBox.innerHTML = `Nama Ahli: <strong>Belum dijumpai</strong> — Masukkan nombor ID ahli di atas.`;
+      return;
+    }
 
-  function evaluateMonthMembers(ym) {
-    const activeBilling = ym >= START_YM;
-    const paidList = [];
-    const unpaidList = [];
-
-    members.forEach(m => {
-      const paidAmt = getPaidAmountForMonth(m.id, ym);
-      const isPaid = activeBilling && paidAmt >= monthlyFee;
-      const item = { ...m, paidAmt, dueAmt: Math.max(0, monthlyFee - paidAmt), activeBilling };
-      if (isPaid) paidList.push(item);
-      else unpaidList.push(item);
+    const found = members.find(m => {
+      const fullId = m.id.toLowerCase();
+      const lastPart = fullId.split("/").pop() || "";
+      return (
+        fullId === query ||
+        fullId.endsWith(query) ||
+        lastPart === query ||
+        lastPart.replace(/^0+/, "") === query.replace(/^0+/, "")
+      );
     });
 
-    return { activeBilling, paidList, unpaidList };
+    if (found) {
+      selectedMemberObj = found;
+      infoBox.innerHTML = `Nama Ahli: <strong>${found.name}</strong> <span style="font-size:11px;">(${found.id})</span>`;
+    } else {
+      selectedMemberObj = null;
+      infoBox.innerHTML = `Nama Ahli: <span style="color:var(--danger); font-weight:700;">Tiada ahli dengan ID tersebut</span>`;
+    }
   }
 
-  function renderSummaryStatus() {
-    const ym = document.getElementById("summaryMonthSelect").value;
-    const totalMembers = members.length;
-    const { activeBilling, paidList, unpaidList } = evaluateMonthMembers(ym);
+  function getPaidForMonth(memberId, ym) {
+    const targetKey = normalizeIdKey(memberId);
+    const targetTail = targetKey.split("/").pop() || "";
+    return transactions
+      .filter(t => {
+        if (t.categoryType !== "FEE" || t.forMonth !== ym) return false;
+        const txKey = normalizeIdKey(t.memberId);
+        const txTail = txKey.split("/").pop() || "";
+        return txKey === targetKey || (targetTail && txTail === targetTail);
+      })
+      .reduce((acc, t) => acc + Number(t.amount || 0), 0);
+  }
 
-    const banner = document.getElementById("topNoticeBanner");
-    if (!activeBilling) {
-      banner.textContent = `Bulan ${ym} adalah sebelum mula kiraan yuran (mula 12/2026). Tiada tunggakan dikira.`;
+  function evaluateMonth(ym) {
+    const isActive = ym >= START_BILLING_YM;
+    const paid = [];
+    const unpaid = [];
+
+    members.forEach(m => {
+      const paidAmt = getPaidForMonth(m.id, ym);
+      const isPaid = paidAmt > 0 && (!isActive || paidAmt >= monthlyFee || paidAmt > 0);
+      const item = { ...m, paidAmt, isPaid, isActive };
+      if (isPaid) paid.push(item);
+      else unpaid.push(item);
+    });
+
+    return { isActive, paid, unpaid };
+  }
+
+  function renderStatusSection() {
+    const ym = document.getElementById("statusMonthSelect").value;
+    const total = members.length;
+    const { isActive, paid, unpaid } = evaluateMonth(ym);
+
+    document.getElementById("memberCountSummary").textContent = `Jumlah ahli berdaftar: ${total}`;
+    document.getElementById("paidCountHeadline").textContent = `${paid.length}/${total} sudah buat bayaran bulan semasa`;
+    document.getElementById("unpaidCountHeadline").textContent = `${unpaid.length}/${total} belum buat bayaran bulan semasa`;
+
+    const paidShort = document.getElementById("paidShortList");
+    if (paid.length === 0) {
+      paidShort.innerHTML = `<div style="font-size:12px; color:var(--muted);">Belum ada ahli yang sudah membuat bayaran bagi bulan ini.</div>`;
     } else {
-      banner.textContent = `Kiraan yuran aktif bermula 12/2026 (RM ${monthlyFee.toFixed(2)}/bulan). ${paidList.length}/${totalMembers} sudah buat bayaran bulan semasa.`;
-    }
-
-    document.getElementById("sheetMetaText").textContent = `Jumlah peserta: ${totalMembers} • Segerak: ${lastSyncTime}`;
-    document.getElementById("paidSummaryHeadline").textContent = `${paidList.length}/${totalMembers} sudah buat bayaran bulan semasa`;
-    document.getElementById("unpaidSummaryHeadline").textContent = activeBilling
-      ? `${unpaidList.length}/${totalMembers} belum buat bayaran bulan semasa`
-      : `0/${totalMembers} belum bayaran aktif (mula 12/2026)`;
-
-    // Paparan ringkas sedikit nama sahaja di muka depan (maksimum 2 nama)
-    const paidPreview = document.getElementById("paidPreviewList");
-    if (paidList.length === 0) {
-      paidPreview.innerHTML = `<div style="font-size:12px; color:var(--muted);">Belum ada ahli yang membayar bagi bulan ini.</div>`;
-    } else {
-      paidPreview.innerHTML = paidList.slice(0, 2).map(m => `
+      paidShort.innerHTML = paid.slice(0, 2).map(m => `
         <div class="member-row">
           <div>
             <div class="m-name">${m.name}</div>
             <div class="m-id">${m.id}</div>
           </div>
-          <span style="font-size:11px; font-weight:700; color:var(--success);">✓ RM ${m.paidAmt.toFixed(2)}</span>
+          <span style="font-size:11px; font-weight:800; color:var(--success);">✓ RM ${m.paidAmt.toFixed(2)}</span>
         </div>
       `).join("");
     }
 
-    const unpaidPreview = document.getElementById("unpaidPreviewList");
-    if (!activeBilling) {
-      unpaidPreview.innerHTML = `<div style="font-size:12px; color:var(--muted);">Kiraan yuran bermula 12/2026.</div>`;
-    } else if (unpaidList.length === 0) {
-      unpaidPreview.innerHTML = `<div style="font-size:12px; color:var(--success); font-weight:700;">Semua ahli sudah menjelaskan yuran bulan ini!</div>`;
+    const unpaidShort = document.getElementById("unpaidShortList");
+    if (unpaid.length === 0) {
+      unpaidShort.innerHTML = `<div style="font-size:12px; color:var(--success); font-weight:700;">Semua ahli berdaftar sudah membuat bayaran bagi bulan ini.</div>`;
     } else {
-      unpaidPreview.innerHTML = unpaidList.slice(0, 2).map(m => `
+      unpaidShort.innerHTML = unpaid.slice(0, 2).map(m => `
         <div class="member-row">
           <div>
             <div class="m-name">${m.name}</div>
             <div class="m-id">${m.id}</div>
           </div>
-          <button class="btn btn-email" onclick="sendEmailNotice('${m.id}', '${ym}')">Notis E-mel</button>
+          ${isActive ? `<button type="button" class="btn btn-email" onclick="sendEmailNotice('${m.id}', '${ym}')">Notis E-mel</button>` : `<span class="m-id">Mula 12/2026</span>`}
         </div>
       `).join("");
     }
   }
 
-  function openFullListModal(type) {
-    currentModalType = type;
-    document.getElementById("modalSearchInput").value = "";
-    document.getElementById("fullListTitle").textContent =
-      type === "paid" ? "Senarai Penuh: Sudah Bayar" : "Senarai Penuh: Belum Bayar";
-    renderFullListModal();
-    document.getElementById("fullListModal").classList.add("open");
+  function openListModal(mode) {
+    modalMode = mode;
+    document.getElementById("listModalSearch").value = "";
+    document.getElementById("listModalTitle").textContent =
+      mode === "paid" ? "Senarai Penuh: Sudah Buat Bayaran" : "Senarai Penuh: Belum Buat Bayaran";
+    renderListModal();
+    document.getElementById("listModal").classList.add("open");
   }
 
-  function closeFullListModal() {
-    document.getElementById("fullListModal").classList.remove("open");
+  function closeListModal() {
+    document.getElementById("listModal").classList.remove("open");
   }
 
-  function renderFullListModal() {
-    const ym = document.getElementById("summaryMonthSelect").value;
-    const q = document.getElementById("modalSearchInput").value.trim().toLowerCase();
-    const { activeBilling, paidList, unpaidList } = evaluateMonthMembers(ym);
-    const source = currentModalType === "paid" ? paidList : (activeBilling ? unpaidList : []);
-    const filtered = source.filter(m => m.name.toLowerCase().includes(q) || m.id.toLowerCase().includes(q));
+  function renderListModal() {
+    const ym = document.getElementById("statusMonthSelect").value;
+    const q = document.getElementById("listModalSearch").value.trim().toLowerCase();
+    const { isActive, paid, unpaid } = evaluateMonth(ym);
+    const list = modalMode === "paid" ? paid : unpaid;
+    const filtered = list.filter(m => m.name.toLowerCase().includes(q) || m.id.toLowerCase().includes(q));
 
-    const body = document.getElementById("fullListBody");
+    const body = document.getElementById("listModalBody");
     if (filtered.length === 0) {
       body.innerHTML = `<div style="font-size:13px; color:var(--muted); padding:10px 0;">Tiada ahli dalam senarai ini.</div>`;
       return;
@@ -595,9 +729,9 @@
           <div class="m-name">${m.name}</div>
           <div class="m-id">${m.id}${m.email ? " • " + m.email : ""}</div>
         </div>
-        ${currentModalType === "paid"
-          ? `<span style="font-size:12px; font-weight:700; color:var(--success);">✓ RM ${m.paidAmt.toFixed(2)}</span>`
-          : `<button class="btn btn-email" onclick="sendEmailNotice('${m.id}', '${ym}')">Notis E-mel</button>`
+        ${modalMode === "paid"
+          ? `<span style="font-size:12px; font-weight:800; color:var(--success);">✓ RM ${m.paidAmt.toFixed(2)}</span>`
+          : (isActive ? `<button type="button" class="btn btn-email" onclick="sendEmailNotice('${m.id}', '${ym}')">Notis E-mel</button>` : `<span class="m-id">Mula 12/2026</span>`)
         }
       </div>
     `).join("");
@@ -606,84 +740,86 @@
   function sendEmailNotice(memberId, ym) {
     const m = members.find(x => x.id === memberId);
     if (!m) return;
-    const monthObj = MONTHS.find(x => x.ym === ym);
-    const monthLabel = monthObj ? monthObj.label : ym;
-    const subject = encodeURIComponent(`Notis Pembayaran Yuran Bulanan KMT MSAS (${monthLabel})`);
+    const mObj = MONTH_OPTIONS.find(x => x.ym === ym);
+    const label = mObj ? mObj.label : ym;
+    const subject = encodeURIComponent(`Notis Pembayaran Yuran Bulanan KMT MSAS (${label})`);
     const body = encodeURIComponent(
       `Assalamualaikum & Salam Sejahtera ${m.name} (${m.id}),\n\n` +
-      `Peringatan mesra mengenai pembayaran yuran bulanan Kelab Memanah Tradisional Warisan Perdana Sg Isap bagi bulan ${monthLabel} berjumlah RM ${monthlyFee.toFixed(2)}.\n\n` +
-      `Mohon tindakan pembayaran kepada Bendahari Kelab. Terima kasih.\nBendahari KMT MSAS`
+      `Peringatan pembayaran yuran bulanan Kelab Memanah Tradisional Warisan Perdana Sg Isap bagi bulan ${label} berjumlah RM ${monthlyFee.toFixed(2)}.\n\n` +
+      `Mohon kerjasama untuk menjelaskan bayaran kepada Bendahari Kelab. Terima kasih.\nBendahari KMT MSAS`
     );
     window.location.href = `mailto:${m.email || ""}?subject=${subject}&body=${body}`;
   }
 
-  // Cari dan isi nama ahli secara automatik apabila nombor ahli dimasukkan
-  function autoFillMemberByNumber() {
-    const raw = document.getElementById("memberNumberInput").value.trim().toLowerCase();
-    const box = document.getElementById("matchedMemberBox");
-    if (!raw) {
-      matchedMember = null;
-      box.innerHTML = `Nama Ahli: <strong>Belum dijumpai</strong> — Masukkan nombor ahli di atas.`;
+  function recordFeePayment() {
+    if (!selectedMemberObj) lookupMemberById();
+    if (!selectedMemberObj) {
+      alert("Sila masukkan nombor ID ahli yang sah dahulu.");
       return;
     }
-
-    const found = members.find(m => {
-      const fullId = m.id.toLowerCase();
-      const tailDigits = fullId.split("/").pop() || "";
-      return fullId === raw || fullId.endsWith(raw) || tailDigits === raw || tailDigits.replace(/^0+/, "") === raw.replace(/^0+/, "");
-    });
-
-    if (found) {
-      matchedMember = found;
-      box.innerHTML = `Nama Ahli: <strong>${found.name}</strong> <span style="font-size:11px;">(${found.id})</span>`;
-    } else {
-      matchedMember = null;
-      box.innerHTML = `Nama Ahli: <span style="color:var(--danger); font-weight:700;">Tiada nombor ahli sepadan</span>`;
-    }
-  }
-
-  function submitFeePayment() {
-    if (!matchedMember) {
-      autoFillMemberByNumber();
-    }
-    if (!matchedMember) {
-      alert("Sila masukkan nombor ahli yang sah supaya nama ahli dapat dikesan.");
-      return;
-    }
-    const forMonth = document.getElementById("payMonthSelect").value;
-    const amount = parseFloat(document.getElementById("payAmountInput").value);
-    const account = document.getElementById("payAccountSelect").value;
-    const date = document.getElementById("payDateInput").value;
+    const forMonth = document.getElementById("feeMonthSelect").value;
+    const amount = parseFloat(document.getElementById("feeAmountInput").value);
+    const account = document.getElementById("feeAccountSelect").value;
+    const date = document.getElementById("feeDateInput").value;
 
     if (isNaN(amount) || amount <= 0) {
-      alert("Sila masukkan amaun bayaran yang sah.");
+      alert("Sila masukkan amaun yuran yang sah.");
       return;
     }
 
-    const tx = {
+    transactions.unshift({
       id: "TX-" + Date.now(),
-      type: "IN",
-      memberId: matchedMember.id,
-      memberName: matchedMember.name,
+      flow: "IN",
+      categoryType: "FEE",
+      sourceLabel: "Yuran Ahli",
+      memberId: selectedMemberObj.id,
+      memberName: selectedMemberObj.name,
       forMonth,
-      desc: `Yuran (${forMonth}) - ${matchedMember.name} [${matchedMember.id}]`,
+      desc: `Yuran (${forMonth}) - ${selectedMemberObj.name} [${selectedMemberObj.id}]`,
       amount,
       account,
       date
-    };
+    });
 
-    transactions.unshift(tx);
-    saveTxAndRefresh();
-
-    // Selaraskan bulan semakan pada muka depan supaya terus nampak kemas kini
-    document.getElementById("summaryMonthSelect").value = forMonth;
-    document.getElementById("memberNumberInput").value = "";
-    autoFillMemberByNumber();
-    switchMainTab("ringkasan");
-    alert(`Bayaran RM ${amount.toFixed(2)} untuk ${tx.memberName} direkodkan & muka depan dikemas kini.`);
+    document.getElementById("statusMonthSelect").value = forMonth;
+    document.getElementById("feeMemberIdInput").value = "";
+    lookupMemberById();
+    saveAndRender();
+    switchPage("status");
+    alert(`Bayaran RM ${amount.toFixed(2)} untuk ${selectedMemberObj.name} direkodkan & status muka depan dikemas kini.`);
   }
 
-  function submitExpense() {
+  function recordOtherIncome() {
+    const source = document.getElementById("incSourceSelect").value;
+    const amount = parseFloat(document.getElementById("incAmountInput").value);
+    const detail = document.getElementById("incDescInput").value.trim();
+    const account = document.getElementById("incAccountSelect").value;
+    const date = document.getElementById("incDateInput").value;
+
+    if (isNaN(amount) || amount <= 0) {
+      alert("Sila masukkan amaun pendapatan yang sah.");
+      return;
+    }
+
+    transactions.unshift({
+      id: "TX-" + Date.now(),
+      flow: "IN",
+      categoryType: "OTHER_INCOME",
+      sourceLabel: source,
+      desc: `${source}${detail ? " - " + detail : ""}`,
+      amount,
+      account,
+      date
+    });
+
+    document.getElementById("incAmountInput").value = "";
+    document.getElementById("incDescInput").value = "";
+    saveAndRender();
+    switchPage("status");
+    alert(`Dana ${source} sebanyak RM ${amount.toFixed(2)} berjaya dimasukkan ke dalam tabungan kelab.`);
+  }
+
+  function recordExpense() {
     const cat = document.getElementById("expCategorySelect").value;
     const payee = document.getElementById("expPayeeInput").value.trim();
     const purpose = document.getElementById("expPurposeInput").value.trim();
@@ -692,14 +828,16 @@
     const date = document.getElementById("expDateInput").value;
 
     if (!payee || isNaN(amount) || amount <= 0) {
-      alert("Sila isi nama penerima dan amaun perbelanjaan.");
+      alert("Sila masukkan nama penerima dan amaun perbelanjaan.");
       return;
     }
 
     transactions.unshift({
       id: "TX-" + Date.now(),
-      type: "OUT",
-      desc: `${cat}: ${payee}${purpose ? " - " + purpose : ""}`,
+      flow: "OUT",
+      categoryType: "EXPENSE",
+      sourceLabel: cat,
+      desc: `${cat}: ${payee}${purpose ? " (" + purpose + ")" : ""}`,
       amount,
       account,
       date
@@ -708,16 +846,20 @@
     document.getElementById("expPayeeInput").value = "";
     document.getElementById("expPurposeInput").value = "";
     document.getElementById("expAmountInput").value = "";
-    saveTxAndRefresh();
-    switchMainTab("ringkasan");
+    saveAndRender();
+    switchPage("status");
   }
 
-  function renderBalancesAndAudit() {
+  function renderFinanceSummary() {
     let bank = 0, cash = 0, totalIn = 0, totalOut = 0;
+    const sourceTotals = {};
+
     transactions.forEach(t => {
       const amt = Number(t.amount || 0);
-      if (t.type === "IN") {
+      if (t.flow === "IN") {
         totalIn += amt;
+        const lbl = t.sourceLabel || "Pendapatan Lain";
+        sourceTotals[lbl] = (sourceTotals[lbl] || 0) + amt;
         if (t.account === "Akaun Bank") bank += amt;
         else cash += amt;
       } else {
@@ -727,31 +869,41 @@
       }
     });
 
-    document.getElementById("bankVal").textContent = `RM ${bank.toFixed(2)}`;
-    document.getElementById("cashVal").textContent = `RM ${cash.toFixed(2)}`;
-    document.getElementById("totalVal").textContent = `RM ${(bank + cash).toFixed(2)}`;
-    document.getElementById("inOutVal").textContent = `Masuk: RM ${totalIn.toFixed(2)} • Keluar: RM ${totalOut.toFixed(2)}`;
+    document.getElementById("bankBalance").textContent = `RM ${bank.toFixed(2)}`;
+    document.getElementById("cashBalance").textContent = `RM ${cash.toFixed(2)}`;
+    document.getElementById("totalBalance").textContent = `RM ${(bank + cash).toFixed(2)}`;
+    document.getElementById("inOutBreakdown").textContent = `Masuk: RM ${totalIn.toFixed(2)} • Keluar: RM ${totalOut.toFixed(2)}`;
 
-    const auditEl = document.getElementById("auditSummaryList");
+    const srcKeys = Object.keys(sourceTotals);
+    const srcEl = document.getElementById("incomeSourcesSummary");
+    if (srcKeys.length === 0) {
+      srcEl.innerHTML = `<span style="color:var(--muted);">Belum ada sumber pendapatan direkodkan.</span>`;
+    } else {
+      srcEl.innerHTML = srcKeys.map(k =>
+        `<span style="display:inline-block; background:#ecfdf5; color:#065f46; padding:3px 8px; border-radius:8px; margin:2px 4px 2px 0; font-weight:700;">${k}: RM ${sourceTotals[k].toFixed(2)}</span>`
+      ).join("");
+    }
+
+    const auditEl = document.getElementById("recentAuditList");
     if (transactions.length === 0) {
       auditEl.innerHTML = "Belum ada transaksi direkodkan.";
     } else {
-      auditEl.innerHTML = transactions.slice(0, 5).map(t => `
+      auditEl.innerHTML = transactions.slice(0, 4).map(t => `
         <div class="member-row">
           <div>
             <div class="m-name">${t.desc}</div>
             <div class="m-id">${t.date} • ${t.account}</div>
           </div>
-          <strong style="font-size:12px; color:${t.type === 'IN' ? 'var(--success)' : 'var(--danger)'};">
-            ${t.type === 'IN' ? '+' : '-'} RM ${Number(t.amount).toFixed(2)}
+          <strong style="font-size:12px; color:${t.flow === 'IN' ? 'var(--success)' : 'var(--danger)'};">
+            ${t.flow === 'IN' ? '+' : '-'} RM ${Number(t.amount).toFixed(2)}
           </strong>
         </div>
       `).join("");
     }
   }
 
-  function renderCorrectionTab() {
-    const box = document.getElementById("correctionListBox");
+  function renderCorrections() {
+    const box = document.getElementById("correctionListContainer");
     if (transactions.length === 0) {
       box.innerHTML = `<div style="font-size:13px; color:var(--muted); padding:10px 0;">Tiada rekod transaksi untuk dibetulkan.</div>`;
       return;
@@ -759,24 +911,22 @@
 
     box.innerHTML = transactions.map(t => `
       <div class="member-row" style="flex-direction:column; align-items:stretch;">
-        <div style="display:flex; justify-content:space-between; gap:8px;">
-          <div>
-            <div style="font-size:12px; font-weight:800; color:${t.type === 'IN' ? 'var(--success)' : 'var(--danger)'};">
-              ${t.type === 'IN' ? 'BAYARAN MASUK' : 'PERBELANJAAN'} • RM ${Number(t.amount).toFixed(2)}
-            </div>
-            <div style="font-size:13px; margin-top:2px;">${t.desc}</div>
-            <div class="m-id">${t.date} • ${t.account}${t.forMonth ? " • Bulan: " + t.forMonth : ""}</div>
+        <div>
+          <div style="font-size:12px; font-weight:800; color:${t.flow === 'IN' ? 'var(--success)' : 'var(--danger)'};">
+            ${t.flow === 'IN' ? '+ MASUK (' + (t.sourceLabel || 'Pendapatan') + ')' : '- KELUAR (Perbelanjaan)'}: RM ${Number(t.amount).toFixed(2)}
           </div>
+          <div style="font-size:13px; margin-top:2px;">${t.desc}</div>
+          <div class="m-id">${t.date} • ${t.account}${t.forMonth ? " • Bulan Yuran: " + t.forMonth : ""}</div>
         </div>
         <div style="display:flex; gap:8px; justify-content:flex-end; margin-top:8px; padding-top:8px; border-top:1px solid var(--border);">
-          <button class="btn btn-edit" onclick="openEditTxModal('${t.id}')">Edit</button>
-          <button class="btn btn-del" onclick="deleteTx('${t.id}')">Padam</button>
+          <button type="button" class="btn btn-edit" onclick="openEditTx('${t.id}')">Edit Data</button>
+          <button type="button" class="btn btn-del" onclick="deleteTx('${t.id}')">Padam</button>
         </div>
       </div>
     `).join("");
   }
 
-  function openEditTxModal(id) {
+  function openEditTx(id) {
     const t = transactions.find(x => x.id === id);
     if (!t) return;
     document.getElementById("editTxId").value = t.id;
@@ -784,21 +934,21 @@
     document.getElementById("editTxAmount").value = t.amount;
     document.getElementById("editTxAccount").value = t.account;
     document.getElementById("editTxDate").value = t.date;
-    const mWrap = document.getElementById("editTxMonthWrap");
-    if (t.type === "IN") {
+    const mWrap = document.getElementById("editFeeMonthWrap");
+    if (t.categoryType === "FEE") {
       mWrap.style.display = "block";
-      document.getElementById("editTxMonth").value = t.forMonth || START_YM;
+      document.getElementById("editTxMonth").value = t.forMonth || START_BILLING_YM;
     } else {
       mWrap.style.display = "none";
     }
-    document.getElementById("editTxModal").classList.add("open");
+    document.getElementById("editModal").classList.add("open");
   }
 
-  function closeEditTxModal() {
-    document.getElementById("editTxModal").classList.remove("open");
+  function closeEditModal() {
+    document.getElementById("editModal").classList.remove("open");
   }
 
-  function saveTxCorrection() {
+  function saveEditedTx() {
     const id = document.getElementById("editTxId").value;
     const idx = transactions.findIndex(x => x.id === id);
     if (idx === -1) return;
@@ -811,40 +961,40 @@
     transactions[idx].amount = amt;
     transactions[idx].account = document.getElementById("editTxAccount").value;
     transactions[idx].date = document.getElementById("editTxDate").value;
-    if (transactions[idx].type === "IN") {
+    if (transactions[idx].categoryType === "FEE") {
       transactions[idx].forMonth = document.getElementById("editTxMonth").value;
     }
-    saveTxAndRefresh();
-    closeEditTxModal();
+    saveAndRender();
+    closeEditModal();
   }
 
   function deleteTx(id) {
     if (!confirm("Padam rekod transaksi ini?")) return;
     transactions = transactions.filter(x => x.id !== id);
-    saveTxAndRefresh();
+    saveAndRender();
   }
 
-  function saveTxAndRefresh() {
-    localStorage.setItem("kmt_tx_v2", JSON.stringify(transactions));
+  function saveAndRender() {
+    localStorage.setItem("kmt_tx_v4", JSON.stringify(transactions));
     renderAll();
   }
 
-  function switchMainTab(tabName) {
-    ["ringkasan", "transaksi", "tetapan"].forEach(t => {
-      document.getElementById(`page-${t}`).classList.toggle("active", t === tabName);
-      document.getElementById(`tab-${t}`).classList.toggle("active", t === tabName);
+  function switchPage(page) {
+    ["status", "bayar", "belanja", "pembetulan"].forEach(p => {
+      document.getElementById(`page-${p}`).classList.toggle("active", p === page);
+      document.getElementById(`nav-${p}`).classList.toggle("active", p === page);
     });
   }
 
   function renderAll() {
-    renderBalancesAndAudit();
-    renderSummaryStatus();
-    renderCorrectionTab();
+    renderFinanceSummary();
+    renderStatusSection();
+    renderCorrections();
   }
 
-  initUI();
+  initForms();
   renderAll();
-  syncSheet(false);
+  syncMembers(false);
 </script>
 </body>
 </html>
