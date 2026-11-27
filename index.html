@@ -6,8 +6,8 @@
   <meta name="theme-color" content="#064e3b" />
   <title>Buku Kewangan KMT MSAS</title>
   <link rel="manifest" href="manifest.json" />
-  <link rel="icon" type="image/png" href="icon-192.png" />
-  <link rel="apple-touch-icon" href="icon-192.png" />
+  <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png" />
+  <link rel="apple-touch-icon" sizes="512x512" href="icon-512.png" />
   <style>
     :root {
       --primary: #064e3b;
@@ -158,14 +158,11 @@
 </head>
 <body>
 
-<audio id="bgMusic" loop preload="auto">
-  <source src="lagu-kelab.mp3" type="audio/mpeg" />
-  <source src="lagu%20kelab.mp3" type="audio/mpeg" />
-</audio>
+<audio id="bgMusic" preload="auto"></audio>
 
 <header>
   <div class="brand">
-    <img src="icon-192.png" alt="Logo Kelab" />
+    <img src="icon-512.png" alt="Logo Kelab" />
     <div>
       <h1>Buku Kewangan KMT MSAS</h1>
       <p>Kelab Memanah Tradisional Warisan Perdana Sg Isap</p>
@@ -504,6 +501,13 @@
   const DEFAULT_GAS_WEBHOOK = "https://script.google.com/macros/s/AKfycbxrUg8NHMad--BwzEWmhKhnG9jxB2_GgKBfnk7ykga70yKl8nIIo7nv5GyIWywjr7tHKQ/exec";
   const START_BILLING_YM = "2026-12";
 
+  const PLAYLIST_LAGU = [
+    "lagu-kelab1.mp3",
+    "lagu-kelab2.mp3",
+    "lagu-kelab3.mp3",
+    "lagu-kelab4.mp3"
+  ];
+
   const MONTH_OPTIONS = [
     { ym: "2026-11", label: "11/2026 (Nov)" },
     { ym: "2026-12", label: "12/2026 (Dis - Mula)" },
@@ -531,72 +535,114 @@
   let selectedMemberObj = null;
   let modalMode = "paid";
   let lastSyncStr = "-";
+
+  let currentSongIndex = 0;
   let musicPlaying = false;
-  let mp3Available = true;
-  let synthTimer = null;
-  let audioCtx = null;
+  let wantAutoplay = true;
+  let failedAttempts = 0;
 
   function getMonthNumberLabel(ym) {
     const parts = String(ym || "").split("-");
     return parts.length === 2 ? String(Number(parts[1])) : ym;
   }
 
-  function startFallbackAmbient() {
-    stopFallbackAmbient();
-    const AudioContextClass = window.AudioContext || window.webkitAudioContext;
-    if (!AudioContextClass) return;
-    audioCtx = new AudioContextClass();
-    const notes = [261.63, 329.63, 392.00, 329.63];
-    let idx = 0;
-    const playStep = () => {
-      if (!musicPlaying || !audioCtx) return;
-      const osc = audioCtx.createOscillator();
-      const gain = audioCtx.createGain();
-      osc.type = "sine";
-      osc.frequency.value = notes[idx % notes.length];
-      gain.gain.setValueAtTime(0.001, audioCtx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.025, audioCtx.currentTime + 0.15);
-      gain.gain.exponentialRampToValueAtTime(0.0008, audioCtx.currentTime + 1.3);
-      osc.connect(gain);
-      gain.connect(audioCtx.destination);
-      osc.start();
-      osc.stop(audioCtx.currentTime + 1.35);
-      idx++;
-    };
-    playStep();
-    synthTimer = setInterval(playStep, 1400);
+  function updateMusicButtonUI(isPlaying) {
+    const btn = document.getElementById("musicToggleBtn");
+    if (!btn) return;
+    btn.textContent = isPlaying
+      ? `🔊 Muzik (${currentSongIndex + 1}/${PLAYLIST_LAGU.length})`
+      : "🔇 Muzik";
   }
 
-  function stopFallbackAmbient() {
-    if (synthTimer) { clearInterval(synthTimer); synthTimer = null; }
-    if (audioCtx) { audioCtx.close().catch(() => {}); audioCtx = null; }
+  function playTrackAtIndex(index, autoPlay) {
+    const audio = document.getElementById("bgMusic");
+    if (!audio || PLAYLIST_LAGU.length === 0) return;
+
+    currentSongIndex = ((index % PLAYLIST_LAGU.length) + PLAYLIST_LAGU.length) % PLAYLIST_LAGU.length;
+    audio.src = PLAYLIST_LAGU[currentSongIndex];
+    audio.load();
+
+    if (autoPlay) {
+      audio.play().then(() => {
+        musicPlaying = true;
+        failedAttempts = 0;
+        updateMusicButtonUI(true);
+      }).catch(() => {
+        musicPlaying = false;
+        updateMusicButtonUI(false);
+      });
+    } else {
+      updateMusicButtonUI(false);
+    }
   }
 
   function toggleMusic() {
     const audio = document.getElementById("bgMusic");
-    const btn = document.getElementById("musicToggleBtn");
-    if (!musicPlaying) {
-      musicPlaying = true;
-      btn.textContent = "🔊 Muzik";
-      if (audio && mp3Available) {
-        audio.play().catch(() => {
-          mp3Available = false;
-          startFallbackAmbient();
-        });
-      } else {
-        startFallbackAmbient();
-      }
+    if (!audio) return;
+
+    if (!audio.src || audio.src === window.location.href) {
+      playTrackAtIndex(currentSongIndex, false);
+    }
+
+    if (audio.paused) {
+      wantAutoplay = true;
+      failedAttempts = 0;
+      audio.play().then(() => {
+        musicPlaying = true;
+        updateMusicButtonUI(true);
+      }).catch(() => {
+        playTrackAtIndex(currentSongIndex, true);
+      });
     } else {
+      wantAutoplay = false;
       musicPlaying = false;
-      btn.textContent = "🔇 Muzik";
-      if (audio) audio.pause();
-      stopFallbackAmbient();
+      audio.pause();
+      updateMusicButtonUI(false);
     }
   }
 
-  document.getElementById("bgMusic").addEventListener("error", () => {
-    mp3Available = false;
+  const bgMusicEl = document.getElementById("bgMusic");
+  bgMusicEl.addEventListener("ended", () => {
+    failedAttempts = 0;
+    if (wantAutoplay) {
+      playTrackAtIndex(currentSongIndex + 1, true);
+    } else {
+      musicPlaying = false;
+      updateMusicButtonUI(false);
+    }
   });
+
+  bgMusicEl.addEventListener("error", () => {
+    failedAttempts++;
+    if (wantAutoplay && failedAttempts < PLAYLIST_LAGU.length) {
+      playTrackAtIndex(currentSongIndex + 1, true);
+    } else {
+      musicPlaying = false;
+      updateMusicButtonUI(false);
+    }
+  });
+
+  function setupBackgroundAutoplay() {
+    playTrackAtIndex(0, true);
+
+    const onFirstUserGesture = () => {
+      if (wantAutoplay && bgMusicEl.paused) {
+        bgMusicEl.play().then(() => {
+          musicPlaying = true;
+          updateMusicButtonUI(true);
+        }).catch(() => {
+          playTrackAtIndex(currentSongIndex, true);
+        });
+      }
+      document.removeEventListener("touchstart", onFirstUserGesture);
+      document.removeEventListener("pointerdown", onFirstUserGesture);
+      document.removeEventListener("click", onFirstUserGesture);
+    };
+
+    document.addEventListener("touchstart", onFirstUserGesture, { passive: true });
+    document.addEventListener("pointerdown", onFirstUserGesture, { passive: true });
+    document.addEventListener("click", onFirstUserGesture, { passive: true });
+  }
 
   function initForms() {
     document.getElementById("monthlyFeeInput").value = monthlyFee.toFixed(2);
@@ -1234,6 +1280,7 @@
   initForms();
   renderAll();
   syncMembers(false);
+  setupBackgroundAutoplay();
 </script>
 </body>
 </html>
